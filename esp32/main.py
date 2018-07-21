@@ -10,11 +10,14 @@ def main():
         }
     }
 
-    single_press_action = lambda : print('click')
+    ir_pin = Pin(14, Pin.OUT)
+
+    single_press_action = lambda : ir_pin.value(1) if ir_pin.value() == 0 else ir_pin.value(0)
     long_press_action = lambda : print('long')
     double_press_action = lambda : print('double')
 
     button = PushButton(single_press_action, long_press_action, double_press_action)
+
 
     while True:
         button.loop()
