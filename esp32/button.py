@@ -1,5 +1,5 @@
 import machine
-import utime
+import time
 
 
 class PushButton:
@@ -20,7 +20,7 @@ class PushButton:
 
     def check_button(self):
         first = self.button.value()
-        utime.sleep_ms(10)
+        time.sleep_ms(10)
         second = self.button.value()
         if first and not second:
             # print('Button pressed!')
@@ -35,7 +35,7 @@ class PushButton:
 
         if state == -1 and self.wait_for_single:
             # Button not pressed
-            now = utime.ticks_ms()
+            now = time.ticks_ms()
             since_last_press = (now - self.end_press)
             if self.end_press > 0 and since_last_press >= 300:
                 print('short press')
@@ -43,12 +43,12 @@ class PushButton:
                 self.wait_for_single = False
         elif state == 1:
             if self.prev_state != state:
-                self.start_press = utime.ticks_ms()
+                self.start_press = time.ticks_ms()
                 # when was the last button end?
                 self.interval = self.start_press - self.end_press
         elif state == 0:
             if self.prev_state != state:
-                self.end_press = utime.ticks_ms()
+                self.end_press = time.ticks_ms()
 
                 duration = self.end_press - self.start_press
                 # print('Pressed for ', duration, ' ms')
