@@ -1,5 +1,26 @@
+import network
+
+from umqtt.simple import MQTTClient
+
 from button import PushButton
 from irsend import IrSender
+
+
+def connect_network():
+    '''Connect to WiFi and disable AP'''
+    sta_if = network.WLAN(network.STA_IF)
+    if not sta_if.isconnected():
+        print('Connecting to network...')
+        sta_if.active(True)
+        sta_if.connect('***REMOVED***', '***REMOVED***')
+        while not sta_if.isconnected():
+            pass
+
+    config = sta_if.ifconfig()
+
+    print('network config:', config)
+
+    return config
 
 
 def main():
@@ -25,9 +46,22 @@ def main():
     button = PushButton(single_press_action,
                         long_press_action, double_press_action)
 
+    connect_network()
+
+    def mqttt_callback(topic, msg): return irsender.send(
+        keys['ac']['on']) if (topic == b'ac' and msg == b'on_off') else -1
+
+    client = MQTTClient('esp32_ir', '***REMOVED***')
+    client.set_callback(mqttt_callback)
+    client.connect()
+    client.subscribe(b'ac')
+
     while True:
+        client.check_msg()
+        
         button.loop()
 
+    client.disconnect()
 
 if __name__ == '__main__':
     main()

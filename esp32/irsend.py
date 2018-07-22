@@ -9,6 +9,7 @@ class IrSender:
         self.pwm = PWM(self.pin, freq=38000, duty=0)
 
     def send(self, pulses):
+        print('sending IR')
         for p in pulses:
             # LED on
             if p > 0:
