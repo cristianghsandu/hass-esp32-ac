@@ -1,6 +1,6 @@
 {
     "terminal.integrated.env.linux": {
-        "PATH": "/home/cristian/.platformio/penv/bin:/home/cristian/.platformio/penv:/home/cristian/.nvm/versions/node/v10.6.0/bin:/home/linuxbrew/.linuxbrew/bin:/home/cristian/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/cristian/.dotnet/tools:/home/linuxbrew/.linuxbrew/opt/go/libexec/bin;/home/cristian/esp/xtensa-esp32-elf/bin:/home/linuxbrew/.linuxbrew/opt/fzf/bin",
+        "PATH": "/home/cristian/.platformio/penv/bin:/home/cristian/.platformio/penv:/home/cristian/.nvm/versions/node/v10.6.0/bin:/home/linuxbrew/.linuxbrew/bin:/home/cristian/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/cristian/.dotnet/tools:/home/linuxbrew/.linuxbrew/opt/go/libexec/bin:/home/linuxbrew/.linuxbrew/opt/fzf/bin",
         "PLATFORMIO_CALLER": "vscode"
     }
 }
