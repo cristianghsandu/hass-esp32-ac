@@ -8,12 +8,13 @@ class IrSender:
         # 38kHz: common freq for IR
         self.pwm = PWM(self.pin, freq=38000, duty=0)
 
+    @micropython.viper
     def send(self, pulses):
         print('sending IR')
         for p in pulses:
             # LED on
             if p > 0:
-                self.pwm.duty(712)
+                self.pwm.duty(512)
             else:
                 self.pwm.duty(0)
             
