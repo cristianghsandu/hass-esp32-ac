@@ -52,7 +52,7 @@ const static char http_debug3[] = "</pre></body></html>";
 // RMT values
 #define RMT_TX_CHANNEL RMT_CHANNEL_0
 #define RMT_TX_GPIO    GPIO_NUM_26
-// channel clock period = 1 uS
+// channel clock period = 0.8 uS?
 #define RMT_CLK_DIV    100
 
 // WIFI values
