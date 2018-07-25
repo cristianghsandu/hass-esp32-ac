@@ -13,7 +13,7 @@ class IrSender:
         for p in pulses:
             # LED on
             if p > 0:
-                self.pwm.duty(512)
+                self.pwm.duty(712)
             else:
                 self.pwm.duty(0)
             
