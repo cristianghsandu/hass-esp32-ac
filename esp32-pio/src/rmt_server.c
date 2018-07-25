@@ -46,14 +46,14 @@ const static char http_debug2[] = "<html><head><title>ESP32</title></head><body>
 const static char http_debug3[] = "</pre></body></html>";
 
 // how to connect to my local WiFi
-#define WIFI_SSID "Your SSID Here"
-#define WIFI_PASS "Your password here"
+#define WIFI_SSID "***REMOVED***"
+#define WIFI_PASS "***REMOVED***"
 
 // RMT values
 #define RMT_TX_CHANNEL RMT_CHANNEL_0
 #define RMT_TX_GPIO    GPIO_NUM_26
 // channel clock period = 1 uS
-#define RMT_CLK_DIV    80
+#define RMT_CLK_DIV    100
 
 // WIFI values
 static EventGroupHandle_t wifi_event_group;
@@ -483,20 +483,20 @@ static void http_server(void *pvParameters) {
 	netconn_delete(conn);
 }
 
-// void app_main() {
-// 	// set board built-in LED as an output
-// 	gpio_pad_select_gpio(LED_BUILTIN);
-// 	gpio_set_direction(LED_BUILTIN, GPIO_MODE_OUTPUT);
+void app_main() {
+	// set board built-in LED as an output
+	gpio_pad_select_gpio(LED_BUILTIN);
+	gpio_set_direction(LED_BUILTIN, GPIO_MODE_OUTPUT);
 	
-// 	// Initialize NVS flash storage
-//     nvs_flash_init();
+	// Initialize NVS flash storage
+    nvs_flash_init();
     
-//     // Initialize the RMT peripheral for output
-//     rmt_tx_init();
+    // Initialize the RMT peripheral for output
+    rmt_tx_init();
     
-//     // Initialize WiFi
-//     initialise_wifi();
+    // Initialize WiFi
+    initialise_wifi();
     
-//     // HTTP server task
-//     xTaskCreate(&http_server, "http_server", 2048, NULL, 5, NULL);
-// }
+    // HTTP server task
+    xTaskCreate(&http_server, "http_server", 2048, NULL, 5, NULL);
+}
