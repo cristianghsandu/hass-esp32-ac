@@ -258,7 +258,7 @@ returnIntVal get_number( char* buf, u16_t start, u16_t end, int count ) {
 // write frequency and clock data to the RMT peripheral
 void send_freq( char* buf, u16_t start, u16_t end ) {
 	// frequency settings: [Division Ratio, High Duration, Low Duration]
-	int freq[3] = { 0, 0, 0};
+	int freq[3] = {0, 0, 0};
 	bool good = true;
 	returnIntVal n;
 	printf("send_freq %d to %d\n", start, end);
