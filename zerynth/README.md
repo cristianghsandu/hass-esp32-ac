@@ -1,1 +1,0 @@
-Attempt to use Zerynth Studio but ICU is not supported on this device(ESP32 Doit DevKit)
