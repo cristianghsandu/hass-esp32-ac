@@ -140,72 +140,9 @@ returnIntVal get_number( char* buf, u16_t start, u16_t end, int count ) {
 
 // FreeRTOS constant portTICK_PERIOD_MS
 // example usage: vtaskDelay( 500 / portTICK_PERIOD_MS )
-void delay_task( char* buf, u16_t start, u16_t end ) {
-	returnIntVal val;
-	val = get_number( buf, start, end, 0 );
-	if ( ( val.good ) && ( val.num > 0 ) ) {
-		vTaskDelay( val.num / portTICK_PERIOD_MS );
-		printf("Delay %d\n", val.num);
-	}
-}
-
-// get lines of RMT commands from POST request
-// start is first valid character of the request
-// end is the last character of the request
-void get_request_line( char* buf, u16_t start, u16_t end ) {
-	u16_t line_start;
-	u16_t this_char = start;
-	line_start = start;
-	while ( this_char <= end ) {
-		// found end of line, decode it
-		if ( ( buf[this_char] == '\r' ) || 
-			 ( buf[this_char] == '\n' ) || 
-			 ( this_char == end ) ) {
-			printf("Line %d to %d\n", line_start, this_char);
-			
-			// ignore newline character at end of this line
-			if ( ( buf[this_char] == '\r' ) || ( buf[this_char] == '\n' ) ) {
-				this_char--;
-			}
-			// is there anything to decode?
-			if ( ( this_char - line_start ) > 1 ) {
-				if ( ( buf[line_start] == 'c' ) && ( buf[line_start+1] == ',' ) ) {
-					printf("clock\n");
-					// send frequency data to the RMT peripheral
-					// send_freq( buf, line_start+2, this_char );
-				}
-				else if ( ( buf[line_start] == 't' ) && ( buf[line_start+1] == ',' ) ) {
-					printf("transmit\n");
-					// turn on the visible LED
-					gpio_set_level(LED_BUILTIN,1);
-					
-					// send duration data to the RMT peripheral
-					// send_duration( buf, line_start+2, this_char );
-					
-					gpio_set_level(LED_BUILTIN,0);
-				}
-				else if ( ( buf[line_start] == 'd' ) && ( buf[line_start+1] == ',' ) ) {
-					printf("delay\n");
-					// delay this task
-					delay_task( buf, line_start+2, this_char );
-				}
-				else {
-					// do not recognize this line
-					printf("unknown line\n");
-				}
-			}
-			// advance to the character AFTER the end of the line
-			if ( this_char < end ) { this_char++; }
-			
-			// skip possible multiple \r and \n
-			while ( this_char <= end && 
-				( buf[this_char] == '\r' || buf[this_char] == '\n' ) ) {
-				this_char++;
-			}
-			line_start = this_char;
-		}
-		this_char++;
-	}
+void delay_task( int ms ) {
+	vTaskDelay( ms / portTICK_PERIOD_MS );
+	printf("Delay %d\n", ms);
 }
 
 // Process an HTTP POST request
@@ -233,7 +170,7 @@ static void http_server_netconn_serve(struct netconn *conn) {
 			// process the POST request
 			rmt_start = find_body( buf, buflen );
 			if ( rmt_start > 0 ) {
-				get_request_line( buf, rmt_start, buflen );
+				// get_request_line( buf, rmt_start, buflen );
 			}
 			
 			// HTTP Response to POST request
