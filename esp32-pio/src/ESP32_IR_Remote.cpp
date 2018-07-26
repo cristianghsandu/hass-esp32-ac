@@ -145,7 +145,7 @@ void ESP32_IRrecv::initSend()
   rmt_driver_install(config.channel, 0, 0); //19     /*!< RMT interrupt number, select from soc.h */
 }
 
-void ESP32_IRrecv::sendIR(unsigned int data[], int IRlength)
+void ESP32_IRrecv::sendIR(int* data, int IRlength)
 {
   rmt_config_t config;
   config.channel = (rmt_channel_t)rmtport;
@@ -163,7 +163,7 @@ void ESP32_IRrecv::sendIR(unsigned int data[], int IRlength)
     Serial.print(data[x + 1]);
     Serial.print(",");
     //    To build a series of waveforms.
-    buildItem(item[i], data[x], data[x + 1]);
+    buildItem(item[i], data[x], -1 * data[x + 1]);
     x = x + 2;
     i++;
   }
@@ -187,14 +187,14 @@ void ESP32_IRrecv::stopIR()
   rmt_driver_uninstall(config.channel);
 }
 
-void ESP32_IRrecv::getDataIR(rmt_item32_t item, unsigned int *datato, int index)
+void ESP32_IRrecv::getDataIR(rmt_item32_t item, int *datato, int index)
 {
-  unsigned int lowValue = (item.duration0) * (10 / TICK_10_US) - SPACE_EXCESS;
+  int lowValue = (item.duration0) * (10 / TICK_10_US) - SPACE_EXCESS;
   lowValue = roundTo * round((float)lowValue / roundTo);
   Serial.print(lowValue);
   Serial.print(",");
-  datato[index] = lowValue;
-  unsigned int highValue = (item.duration1) * (10 / TICK_10_US) + MARK_EXCESS;
+  datato[index] = -lowValue;
+  int highValue = (item.duration1) * (10 / TICK_10_US) + MARK_EXCESS;
   highValue = roundTo * round((float)highValue / roundTo);
   Serial.print(highValue);
   Serial.print(",");
@@ -209,7 +209,7 @@ void ESP32_IRrecv::buildItem(rmt_item32_t &item, int high_us, int low_us)
   item.duration1 = (low_us / 10 * TICK_10_US);
 }
 
-void ESP32_IRrecv::decodeRAW(rmt_item32_t *data, int numItems, unsigned int *datato)
+void ESP32_IRrecv::decodeRAW(rmt_item32_t *data, int numItems, int *datato)
 {
   int x = 0;
   for (int i = 0; i < numItems; i++)
@@ -220,7 +220,7 @@ void ESP32_IRrecv::decodeRAW(rmt_item32_t *data, int numItems, unsigned int *dat
   Serial.println();
 }
 
-int ESP32_IRrecv::readIR(unsigned int *data, int maxBuf)
+int ESP32_IRrecv::readIR(int *data, int maxBuf)
 {
   RingbufHandle_t rb = NULL;
   rmt_config_t config;

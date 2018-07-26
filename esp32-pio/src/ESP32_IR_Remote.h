@@ -53,14 +53,14 @@ class ESP32_IRrecv {
     void initReceive();
     void initSend();
     void stopIR();
-    int readIR(unsigned int* data, int maxBuf);
-    void sendIR(unsigned int data[], int IRlength);
+    int  readIR(int* data, int maxBuf);
+    void sendIR(int* data, int IRlength);
 
   private:
     int gpionum;
     int rmtport;
-    void decodeRAW(rmt_item32_t *data, int numItems, unsigned int* datato);
-    void getDataIR(rmt_item32_t item, unsigned int* datato, int index);
+    void decodeRAW(rmt_item32_t *data, int numItems, int* datato);
+    void getDataIR(rmt_item32_t item, int* datato, int index);
     void buildItem(rmt_item32_t &item,int high_us,int low_us);  
 };
 
