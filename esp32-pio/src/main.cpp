@@ -32,7 +32,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     irrecv.sendIR((int *)data_ac, codelen);
     digitalWrite(LED_BUILTIN, LOW);
 
-    mqttClient.publish("ac/status", "ack");
+    mqttClient.publish("ac/status", "sent AC command");
 }
 
 void setup()
@@ -76,6 +76,8 @@ void reconnect()
 
             // Await commands on this topic
             mqttClient.subscribe("ac/control");
+
+            mqttClient.publish("ac/status", WiFi.localIP().toString().c_str());
         }
         else
         {
