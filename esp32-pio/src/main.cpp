@@ -31,6 +31,8 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     digitalWrite(LED_BUILTIN, HIGH);
     irrecv.sendIR((int *)data_ac, codelen);
     digitalWrite(LED_BUILTIN, LOW);
+
+    mqttClient.publish("ac/status", "ack");
 }
 
 void setup()
@@ -73,7 +75,7 @@ void reconnect()
             Serial.println("connected");
 
             // Await commands on this topic
-            mqttClient.subscribe("ac");
+            mqttClient.subscribe("ac/control");
         }
         else
         {
