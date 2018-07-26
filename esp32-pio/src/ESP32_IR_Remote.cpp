@@ -46,7 +46,7 @@ extern "C"
 #define rmt_item32_TIMEOUT_US 5000 /*!< RMT receiver timeout value(us) */
 
 // Clock divisor (base clock is 80MHz)
-#define CLK_DIV 100
+#define CLK_DIV 80
 
 // Number of clock ticks that represent 10us.  10 us = 1/100th msec.
 #define TICK_10_US (80000000 / CLK_DIV / 100000)

@@ -29,11 +29,12 @@ void setup()
     irrecv.ESP32_IRsendPIN(SEND_PIN, 0);
     irrecv.initSend();
     delay(1000);
+    
+    Serial.println(codelen);
 }
 
 void loop()
 {
-    Serial.println(codelen);
 
     buttonState = digitalRead(BUTTON_PIN);
 
