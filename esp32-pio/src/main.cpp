@@ -2,14 +2,18 @@
  * Based on https://github.com/Darryl-Scott/ESP32-RMT-Library-IR-code-RAW
  */
 
-#include "Arduino.h"
+#include <Arduino.h>
+#include <WiFi.h>
+#include <PubSubClient.h>
+#include <DHT.h>
+
 #include "ESP32_IR_Remote.h"
-#include "WiFi.h"
-#include "PubSubClient.h"
 
 const char *ssid = "***REMOVED***";
 const char *password = "***REMOVED***";
 const char *mqttServer = "***REMOVED***";
+
+DHT dht(14, DHT22);
 
 // MQTT
 WiFiClient espClient;
@@ -60,6 +64,8 @@ void setup()
     irrecv.initSend();
     delay(1000);
 
+    dht.begin();
+
     Serial.println(codelen);
 }
 
@@ -106,5 +112,19 @@ void loop()
         digitalWrite(LED_BUILTIN, HIGH);
         irrecv.sendIR((int *)data_ac, codelen);
         digitalWrite(LED_BUILTIN, LOW);
+    }
+
+    // Read temperature as Celsius (the default)
+    float t = dht.readTemperature();
+    float h = dht.readHumidity();
+
+    // Check if any reads failed and exit early (to try again).
+    if (isnan(h) || isnan(t))
+    {
+        Serial.println("Failed to read from DHT sensor!");
+        return;
+    } else {
+        mqttClient.publish("dht22/temp", String(t).c_str());
+        mqttClient.publish("dht22/hum", String(h).c_str());
     }
 }
