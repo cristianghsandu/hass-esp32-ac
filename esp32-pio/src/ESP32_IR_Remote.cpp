@@ -131,14 +131,14 @@ void ESP32_IRrecv::initSend()
   rmt_config_t config;
   config.channel = (rmt_channel_t)rmtport;
   config.gpio_num = (gpio_num_t)gpionum;
-  config.mem_block_num = 7; //how many memory blocks 64 x N (0-7)
+  config.mem_block_num = 1; //how many memory blocks 64 x N (0-7)
   config.clk_div = CLK_DIV;
   config.tx_config.loop_en = false;
-  config.tx_config.carrier_duty_percent = 50;
+  config.tx_config.carrier_duty_percent = 30;
   config.tx_config.carrier_freq_hz = 38000;
-  config.tx_config.carrier_level = (rmt_carrier_level_t)1;
-  config.tx_config.carrier_en = 1;
-  config.tx_config.idle_level = (rmt_idle_level_t)0;
+  config.tx_config.carrier_level = RMT_CARRIER_LEVEL_HIGH;
+  config.tx_config.carrier_en = true;
+  config.tx_config.idle_level = RMT_IDLE_LEVEL_LOW;
   config.tx_config.idle_output_en = true;
   config.rmt_mode = (rmt_mode_t)0; //RMT_MODE_TX;
   rmt_config(&config);
@@ -203,9 +203,9 @@ void ESP32_IRrecv::getDataIR(rmt_item32_t item, unsigned int *datato, int index)
 
 void ESP32_IRrecv::buildItem(rmt_item32_t &item, int high_us, int low_us)
 {
-  item.level0 = 1;
+  item.level0 = true;
   item.duration0 = (high_us / 10 * TICK_10_US);
-  item.level1 = 0;
+  item.level1 = false;
   item.duration1 = (low_us / 10 * TICK_10_US);
 }
 
