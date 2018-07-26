@@ -96,6 +96,8 @@ void reconnect()
     }
 }
 
+int lastDhtRead = 0;
+
 void loop()
 {
     // Connect MQTT
@@ -114,17 +116,29 @@ void loop()
         digitalWrite(LED_BUILTIN, LOW);
     }
 
-    // Read temperature as Celsius (the default)
-    float t = dht.readTemperature();
-    float h = dht.readHumidity();
-
-    // Check if any reads failed and exit early (to try again).
-    if (isnan(h) || isnan(t))
+    if (millis() - lastDhtRead >= 2000)
     {
-        Serial.println("Failed to read from DHT sensor!");
-        return;
-    } else {
-        mqttClient.publish("dht22/temp", String(t).c_str());
-        mqttClient.publish("dht22/hum", String(h).c_str());
+        // Read temperature as Celsius (the default)
+        float t = dht.readTemperature();
+        float h = dht.readHumidity();
+
+        // Check if any reads failed and exit early (to try again).
+        if (isnan(h) || isnan(t))
+        {
+            Serial.println("Failed to read from DHT sensor!");
+            return;
+        }
+        else
+        {
+            String json = "{ \"temp\": ";
+            json.concat(t);
+            json.concat(", \"hum\": ");
+            json.concat(h);
+            json.concat("}");
+
+            mqttClient.publish("sensors/dht22", json.c_str());
+
+            lastDhtRead = millis();
+        }
     }
 }
