@@ -5,9 +5,15 @@
 #include "Arduino.h"
 #include "ESP32_IR_Remote.h"
 #include "WiFi.h"
+#include "PubSubClient.h"
 
 const char *ssid = "***REMOVED***";
 const char *password = "***REMOVED***";
+const char *mqttServer = "***REMOVED***";
+
+// MQTT
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
 
 const int SEND_PIN = 26; // pin on the ESP32
 const int BUTTON_PIN = 12;
@@ -20,10 +26,12 @@ int codelen = 343;
 
 int buttonState = -1;
 
-// the following variables are unsigned longs because the time, measured in
-// milliseconds, will quickly become a bigger number than can be stored in an int.
-unsigned long lastDebounceTime = 0; // the last time the output pin was toggled
-unsigned long debounceDelay = 10;   // the debounce time; increase if the output flickers
+void mqttCallback(char *topic, byte *payload, unsigned int length)
+{
+    digitalWrite(LED_BUILTIN, HIGH);
+    irrecv.sendIR((int *)data_ac, codelen);
+    digitalWrite(LED_BUILTIN, LOW);
+}
 
 void setup()
 {
@@ -43,6 +51,9 @@ void setup()
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
 
+    mqttClient.setServer(mqttServer, 1883);
+    mqttClient.setCallback(mqttCallback);
+
     irrecv.ESP32_IRsendPIN(SEND_PIN, 0);
     irrecv.initSend();
     delay(1000);
@@ -50,8 +61,40 @@ void setup()
     Serial.println(codelen);
 }
 
+void reconnect()
+{
+    // Loop until we\"re reconnected
+    while (!mqttClient.connected())
+    {
+        Serial.print("Attempting MQTT connection...");
+        // Attempt to connect
+        if (mqttClient.connect("esp32irblaster"))
+        {
+            Serial.println("connected");
+
+            // Await commands on this topic
+            mqttClient.subscribe("ac");
+        }
+        else
+        {
+            Serial.print("failed, rc=");
+            Serial.print(mqttClient.state());
+            Serial.println(" try again in 5 seconds");
+            // Wait 5 seconds before retrying
+            delay(5000);
+        }
+    }
+}
+
 void loop()
 {
+    // Connect MQTT
+    if (!mqttClient.connected())
+    {
+        reconnect();
+    }
+    mqttClient.loop();
+
     buttonState = digitalRead(BUTTON_PIN);
 
     if (buttonState == LOW)
