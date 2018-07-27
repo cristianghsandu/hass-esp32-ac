@@ -5,7 +5,9 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <Adafruit_Sensor.h>
 #include <DHT.h>
+#include <DHT_U.h>
 
 #include "ESP32_IR_Remote.h"
 
@@ -13,7 +15,7 @@ const char *ssid = "***REMOVED***";
 const char *password = "***REMOVED***";
 const char *mqttServer = "***REMOVED***";
 
-DHT dht(14, DHT22);
+DHT_Unified dht(14, DHT22);
 
 // MQTT
 WiFiClient espClient;
@@ -36,12 +38,14 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     irrecv.sendIR((int *)data_ac, codelen);
     digitalWrite(LED_BUILTIN, LOW);
 
-    mqttClient.publish("ac/status", "sent AC command");
+    mqttClient.publish("ac/status", "on/off");
 }
 
 void setup()
 {
     Serial.begin(115200);
+
+    dht.begin();
 
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(LED_BUILTIN, OUTPUT);
@@ -63,8 +67,6 @@ void setup()
     irrecv.ESP32_IRsendPIN(SEND_PIN, 0);
     irrecv.initSend();
     delay(1000);
-
-    dht.begin();
 
     Serial.println(codelen);
 }
@@ -114,18 +116,24 @@ void loop()
         digitalWrite(LED_BUILTIN, HIGH);
         irrecv.sendIR((int *)data_ac, codelen);
         digitalWrite(LED_BUILTIN, LOW);
+
+        mqttClient.publish("ac/status", "on/off");
     }
 
     if (millis() - lastDhtRead >= 30000)
     {
-        // Read temperature as Celsius (the default)
-        float t = dht.readTemperature();
-        float h = dht.readHumidity();
+        // DHT22: Check if any reads failed and exit early (to try again).
+        sensors_event_t event;
+        
+        dht.temperature().getEvent(&event);
+        float t = event.temperature;
+        dht.humidity().getEvent(&event);
+        float h = event.relative_humidity;
 
-        // Check if any reads failed and exit early (to try again).
-        if (isnan(h) || isnan(t))
+        if (isnan(t) || isnan(h))
         {
             Serial.println("Failed to read from DHT sensor!");
+            mqttClient.publish("ac/status", "dht22 error");
         }
         else
         {
@@ -137,7 +145,7 @@ void loop()
 
             mqttClient.publish("sensors/dht22", json.c_str());
         }
-        
+
         lastDhtRead = millis();
     }
 }
