@@ -116,7 +116,7 @@ void loop()
         digitalWrite(LED_BUILTIN, LOW);
     }
 
-    if (millis() - lastDhtRead >= 2000)
+    if (millis() - lastDhtRead >= 30000)
     {
         // Read temperature as Celsius (the default)
         float t = dht.readTemperature();
@@ -126,7 +126,6 @@ void loop()
         if (isnan(h) || isnan(t))
         {
             Serial.println("Failed to read from DHT sensor!");
-            return;
         }
         else
         {
@@ -137,8 +136,8 @@ void loop()
             json.concat("}");
 
             mqttClient.publish("sensors/dht22", json.c_str());
-
-            lastDhtRead = millis();
         }
+        
+        lastDhtRead = millis();
     }
 }
