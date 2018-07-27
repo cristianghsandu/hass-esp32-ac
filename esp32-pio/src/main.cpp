@@ -16,6 +16,7 @@ const char *password = "***REMOVED***";
 const char *mqttServer = "***REMOVED***";
 
 DHT_Unified dht(14, DHT22);
+uint32_t dht22selayMS;
 
 // MQTT
 WiFiClient espClient;
@@ -46,6 +47,11 @@ void setup()
     Serial.begin(115200);
 
     dht.begin();
+    sensor_t sensor;
+    dht.temperature().getSensor(&sensor);
+    dht.humidity().getSensor(&sensor);
+    // Set delay between sensor readings based on sensor details.
+    dht22selayMS = sensor.min_delay / 1000;
 
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(LED_BUILTIN, OUTPUT);
@@ -120,11 +126,11 @@ void loop()
         mqttClient.publish("ac/status", "on/off");
     }
 
-    if (millis() - lastDhtRead >= 30000)
+    if (millis() - lastDhtRead >= dht22selayMS)
     {
         // DHT22: Check if any reads failed and exit early (to try again).
         sensors_event_t event;
-        
+
         dht.temperature().getEvent(&event);
         float t = event.temperature;
         dht.humidity().getEvent(&event);
