@@ -5,18 +5,13 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
-#include <Adafruit_Sensor.h>
-#include <DHT.h>
-#include <DHT_U.h>
 
 #include "ESP32_IR_Remote.h"
+#include "dht.h"
 
 const char *ssid = "***REMOVED***";
 const char *password = "***REMOVED***";
 const char *mqttServer = "***REMOVED***";
-
-DHT_Unified dht(14, DHT22);
-uint32_t dht22selayMS;
 
 // MQTT
 WiFiClient espClient;
@@ -46,13 +41,6 @@ void setup()
 {
     Serial.begin(115200);
 
-    dht.begin();
-    sensor_t sensor;
-    dht.temperature().getSensor(&sensor);
-    dht.humidity().getSensor(&sensor);
-    // Set delay between sensor readings based on sensor details.
-    dht22selayMS = sensor.min_delay / 1000;
-
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(LED_BUILTIN, OUTPUT);
 
@@ -75,6 +63,8 @@ void setup()
     delay(1000);
 
     Serial.println(codelen);
+
+    dht22setup();
 }
 
 void reconnect()
@@ -126,32 +116,35 @@ void loop()
         mqttClient.publish("ac/status", "on/off");
     }
 
-    if (millis() - lastDhtRead >= dht22selayMS)
-    {
-        // DHT22: Check if any reads failed and exit early (to try again).
-        sensors_event_t event;
+    dht22loop();
 
-        dht.temperature().getEvent(&event);
-        float t = event.temperature;
-        dht.humidity().getEvent(&event);
-        float h = event.relative_humidity;
+    // if (millis() - lastDhtRead >= 10000)
+    // {
+    //     // DHT22: Check if any reads failed and exit early (to try again).
+    //     // sensors_event_t event;
 
-        if (isnan(t) || isnan(h))
-        {
-            Serial.println("Failed to read from DHT sensor!");
-            mqttClient.publish("ac/status", "dht22 error");
-        }
-        else
-        {
-            String json = "{ \"temp\": ";
-            json.concat(t);
-            json.concat(", \"hum\": ");
-            json.concat(h);
-            json.concat("}");
+    //     // dht.temperature().getEvent(&event);
+    //     // float t = event.temperature;
+    //     // dht.humidity().getEvent(&event);
+    //     // float h = event.relative_humidity;
 
-            mqttClient.publish("sensors/dht22", json.c_str());
-        }
+    //     float t = 0, h = 0;
+    //     if (isnan(t) || isnan(h))
+    //     {
+    //         Serial.println("Failed to read from DHT sensor!");
+    //         mqttClient.publish("ac/status", "dht22 error");
+    //     }
+    //     else
+    //     {
+    //         String json = "{ \"temp\": ";
+    //         json.concat(t);
+    //         json.concat(", \"hum\": ");
+    //         json.concat(h);
+    //         json.concat("}");
 
-        lastDhtRead = millis();
-    }
+    //         mqttClient.publish("sensors/dht22", json.c_str());
+    //     }
+
+    //     lastDhtRead = millis();
+    // }
 }
