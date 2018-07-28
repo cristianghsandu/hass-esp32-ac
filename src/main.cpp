@@ -64,7 +64,7 @@ void setup()
 
     Serial.println(codelen);
 
-    dht22setup();
+    dht22setup(&mqttClient);
 }
 
 void reconnect()

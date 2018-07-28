@@ -1,3 +1,5 @@
+#include <PubSubClient.h>
+
 #include "DHTesp.h"
 #include "Ticker.h"
 
@@ -6,22 +8,24 @@
 #error Select ESP32 board.
 #endif
 
-DHTesp dht;
+static DHTesp dht;
 
-void tempTask(void *pvParameters);
-bool getTemperature();
-void triggerGetTemp();
+static PubSubClient *mqttClient;
+
+static void tempTask(void *pvParameters);
+static bool getTemperature();
+static void triggerGetTemp();
 
 /** Task handle for the light value read task */
-TaskHandle_t tempTaskHandle = NULL;
+static TaskHandle_t tempTaskHandle = NULL;
 /** Ticker for temperature reading */
-Ticker tempTicker;
+static Ticker tempTicker;
 /** Comfort profile */
-ComfortState cf;
+static ComfortState cf;
 /** Flag if task should run */
-bool tasksEnabled = false;
+static bool tasksEnabled = false;
 /** Pin number for DHT22 data pin */
-int dhtPin = 14;
+static int dhtPin = 14;
 
 /**
  * initTemp
@@ -31,7 +35,7 @@ int dhtPin = 14;
  *    true if task and timer are started
  *    false if task or timer couldn't be started
  */
-bool initTemp()
+static bool initTemp()
 {
     // Initialize temperature sensor
     dht.setup(dhtPin, DHTesp::DHT22);
@@ -65,7 +69,7 @@ bool initTemp()
  * Sets flag dhtUpdated to true for handling in loop()
  * called by Ticker getTempTimer
  */
-void triggerGetTemp()
+static void triggerGetTemp()
 {
     if (tempTaskHandle != NULL)
     {
@@ -78,7 +82,7 @@ void triggerGetTemp()
  * @param pvParameters
  *    pointer to task parameters
  */
-void tempTask(void *pvParameters)
+static void tempTask(void *pvParameters)
 {
     Serial.println("tempTask loop started");
     while (1) // tempTask loop
@@ -100,7 +104,7 @@ void tempTask(void *pvParameters)
  *    true if temperature could be aquired
  *    false if aquisition failed
 */
-bool getTemperature()
+static bool getTemperature()
 {
     // Reading temperature for humidity takes about 250 milliseconds!
     // Sensor readings may also be up to 2 seconds 'old' (it's a very slow sensor)
@@ -108,7 +112,13 @@ bool getTemperature()
     // Check if any reads failed and exit early (to try again).
     if (dht.getStatus() != 0)
     {
-        Serial.println("DHT error status: " + String(dht.getStatusString()));
+        Serial.println("DHT22 error status: " + String(dht.getStatusString()));
+
+        if (mqttClient)
+        {
+            mqttClient->publish("ac/status", "dht22 error");
+        }
+
         return false;
     }
 
@@ -152,14 +162,28 @@ bool getTemperature()
     };
 
     Serial.println(" T:" + String(newValues.temperature) + " H:" + String(newValues.humidity) + " I:" + String(heatIndex) + " D:" + String(dewPoint) + " " + comfortStatus);
+
+    if (mqttClient)
+    {
+        String json = "{ \"temp\": ";
+        json.concat(newValues.temperature);
+        json.concat(", \"hum\": ");
+        json.concat(newValues.humidity);
+        json.concat("}");
+
+        mqttClient->publish("sensors/dht22", json.c_str());
+    }
+
     return true;
 }
 
-void dht22setup()
+void dht22setup(PubSubClient *client)
 {
     initTemp();
     // Signal end of setup() to tasks
     tasksEnabled = true;
+
+    mqttClient = client;
 }
 
 void dht22loop()
