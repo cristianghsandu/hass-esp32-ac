@@ -28,13 +28,17 @@ int codelen = 343;
 
 int buttonState = -1;
 
+int acState = 0;
+
 void mqttCallback(char *topic, byte *payload, unsigned int length)
 {
     digitalWrite(LED_BUILTIN, HIGH);
     irrecv.sendIR((int *)data_ac, codelen);
     digitalWrite(LED_BUILTIN, LOW);
 
-    mqttClient.publish("ac/status", "on/off");
+    acState = acState ^ 1;
+
+    mqttClient.publish("ac/status", acState == 1 ? "on" : "off");
 }
 
 void setup()
@@ -81,7 +85,7 @@ void reconnect()
             // Await commands on this topic
             mqttClient.subscribe("ac/control");
 
-            mqttClient.publish("ac/status", WiFi.localIP().toString().c_str());
+            mqttClient.publish("ac/esp32-wifi", WiFi.localIP().toString().c_str());
         }
         else
         {
@@ -113,38 +117,9 @@ void loop()
         irrecv.sendIR((int *)data_ac, codelen);
         digitalWrite(LED_BUILTIN, LOW);
 
-        mqttClient.publish("ac/status", "on/off");
+        acState = acState ^ 1;
+        mqttClient.publish("ac/status", acState == 1 ? "on" : "off");
     }
 
     dht22loop();
-
-    // if (millis() - lastDhtRead >= 10000)
-    // {
-    //     // DHT22: Check if any reads failed and exit early (to try again).
-    //     // sensors_event_t event;
-
-    //     // dht.temperature().getEvent(&event);
-    //     // float t = event.temperature;
-    //     // dht.humidity().getEvent(&event);
-    //     // float h = event.relative_humidity;
-
-    //     float t = 0, h = 0;
-    //     if (isnan(t) || isnan(h))
-    //     {
-    //         Serial.println("Failed to read from DHT sensor!");
-    //         mqttClient.publish("ac/status", "dht22 error");
-    //     }
-    //     else
-    //     {
-    //         String json = "{ \"temp\": ";
-    //         json.concat(t);
-    //         json.concat(", \"hum\": ");
-    //         json.concat(h);
-    //         json.concat("}");
-
-    //         mqttClient.publish("sensors/dht22", json.c_str());
-    //     }
-
-    //     lastDhtRead = millis();
-    // }
 }
