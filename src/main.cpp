@@ -32,13 +32,24 @@ int acState = 0;
 
 void mqttCallback(char *topic, byte *payload, unsigned int length)
 {
-    digitalWrite(LED_BUILTIN, HIGH);
-    irrecv.sendIR((int *)data_ac, codelen);
-    digitalWrite(LED_BUILTIN, LOW);
+    String strTopic(topic);
+    if (strTopic.equals("ac/control"))
+    {
+        digitalWrite(LED_BUILTIN, HIGH);
+        irrecv.sendIR((int *)data_ac, codelen);
+        digitalWrite(LED_BUILTIN, LOW);
 
-    acState = acState ^ 1;
+        acState = acState ^ 1;
 
-    mqttClient.publish("ac/status", acState == 1 ? "on" : "off");
+        mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
+    } else if (strTopic.equals("ac/status")) {
+        String strPayload((char*)payload);
+        if (strPayload.equals("on")) {
+            acState = 1;
+        } else if (strPayload.equals("off")) {
+            acState = 1;
+        }
+    }
 }
 
 void setup()
@@ -84,6 +95,8 @@ void reconnect()
 
             // Await commands on this topic
             mqttClient.subscribe("ac/control");
+            // Sync state
+            mqttClient.subscribe("ac/status");
 
             mqttClient.publish("ac/esp32-wifi", WiFi.localIP().toString().c_str());
         }
@@ -118,7 +131,7 @@ void loop()
         digitalWrite(LED_BUILTIN, LOW);
 
         acState = acState ^ 1;
-        mqttClient.publish("ac/status", acState == 1 ? "on" : "off");
+        mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
     }
 
     dht22loop();
