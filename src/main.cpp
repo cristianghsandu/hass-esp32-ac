@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <OneButton.h>
 
 #include "ESP32_IR_Remote.h"
 #include "dht.h"
@@ -22,6 +23,8 @@ const int BUTTON_PIN = 12;
 
 ESP32_IRrecv irrecv;
 
+OneButton button(BUTTON_PIN, true);
+
 // high, low, high, low, ...
 const int data_ac[344] = {9120, -4592, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -8085, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -8064, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, 0};
 int codelen = 343;
@@ -29,6 +32,7 @@ int codelen = 343;
 int buttonState = -1;
 
 int acState = 0;
+int autoOnOff = 0;
 
 void mqttCallback(char *topic, byte *payload, unsigned int length)
 {
@@ -42,22 +46,63 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
         acState = acState ^ 1;
 
         mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
-    } else if (strTopic.equals("ac/status")) {
-        String strPayload((char*)payload);
-        if (strPayload.equals("on")) {
-            acState = 1;
-        } else if (strPayload.equals("off")) {
+    }
+    else if (strTopic.equals("ac/status"))
+    {
+        String strPayload((char *)payload);
+        if (strPayload.equals("on"))
+        {
             acState = 1;
         }
+        else if (strPayload.equals("off"))
+        {
+            acState = 1;
+        }
+    } else if (strTopic.equals("ac/auto")) {
+        String strPayload((char *)payload);
+        if (strPayload.equals("on")) {
+            autoOnOff = 1;
+        } else if (strPayload.equals("off")) {
+            autoOnOff = 0;
+        }
     }
+}
+
+void turnAcOnOff()
+{
+    digitalWrite(LED_BUILTIN, HIGH);
+    irrecv.sendIR((int *)data_ac, codelen);
+    digitalWrite(LED_BUILTIN, LOW);
+
+    acState = acState ^ 1;
+    mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
+}
+
+void setAutoOnOff()
+{
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+
+    autoOnOff = autoOnOff ^ 1;
+    mqttClient.publish("ac/auto", acState == 1 ? "on" : "off", true);
 }
 
 void setup()
 {
     Serial.begin(115200);
 
-    pinMode(BUTTON_PIN, INPUT_PULLUP);
     pinMode(LED_BUILTIN, OUTPUT);
+
+    button.attachClick(turnAcOnOff);
+    button.attachDoubleClick(setAutoOnOff);
+
+    // set 80 msec. debouncing time. Default is 50 msec.
+    button.setDebounceTicks(50);
 
     WiFi.begin(ssid, password);
     while (WiFi.status() != WL_CONNECTED)
@@ -122,17 +167,7 @@ void loop()
     }
     mqttClient.loop();
 
-    buttonState = digitalRead(BUTTON_PIN);
-
-    if (buttonState == LOW)
-    {
-        digitalWrite(LED_BUILTIN, HIGH);
-        irrecv.sendIR((int *)data_ac, codelen);
-        digitalWrite(LED_BUILTIN, LOW);
-
-        acState = acState ^ 1;
-        mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
-    }
+    button.tick();
 
     dht22loop();
 }
