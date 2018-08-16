@@ -56,13 +56,18 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
         }
         else if (strPayload.equals("off"))
         {
-            acState = 1;
+            acState = 0;
         }
-    } else if (strTopic.equals("ac/auto")) {
+    }
+    else if (strTopic.equals("ac/auto"))
+    {
         String strPayload((char *)payload);
-        if (strPayload.equals("on")) {
+        if (strPayload.equals("on"))
+        {
             autoOnOff = 1;
-        } else if (strPayload.equals("off")) {
+        }
+        else if (strPayload.equals("off"))
+        {
             autoOnOff = 0;
         }
     }
