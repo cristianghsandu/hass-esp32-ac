@@ -89,7 +89,7 @@ void setAutoOnOff()
     digitalWrite(LED_BUILTIN, LOW);
 
     autoOnOff = autoOnOff ^ 1;
-    mqttClient.publish("ac/auto", acState == 1 ? "on" : "off", true);
+    mqttClient.publish("ac/auto", autoOnOff == 1 ? "on" : "off", true);
 }
 
 void setup()
