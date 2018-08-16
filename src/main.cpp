@@ -2,20 +2,26 @@
  * Based on https://github.com/Darryl-Scott/ESP32-RMT-Library-IR-code-RAW
  */
 
+// Config
+#define ENABLE_IR 1
+#define ENABLE_DHT22 1
+
 #include <Arduino.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <OneButton.h>
 
+#if ENABLE_IR
 #include "ESP32_IR_Remote.h"
+#endif
+
+#if ENABLE_DHT22
 #include "dht.h"
+#endif
 
 const char *ssid = "***REMOVED***";
 const char *password = "***REMOVED***";
 const char *mqttServer = "***REMOVED***";
-
-#define ENABLE_IR 1
-#define ENABLE_DHT22 1
 
 // MQTT
 WiFiClient espClient;
