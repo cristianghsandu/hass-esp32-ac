@@ -14,6 +14,9 @@ const char *ssid = "***REMOVED***";
 const char *password = "***REMOVED***";
 const char *mqttServer = "***REMOVED***";
 
+#define ENABLE_IR 1
+#define ENABLE_DHT22 1
+
 // MQTT
 WiFiClient espClient;
 PubSubClient mqttClient(espClient);
@@ -21,7 +24,9 @@ PubSubClient mqttClient(espClient);
 const int SEND_PIN = 26; // pin on the ESP32
 const int BUTTON_PIN = 12;
 
+#if ENABLE_IR
 ESP32_IRrecv irrecv;
+#endif
 
 OneButton button(BUTTON_PIN, true);
 
@@ -40,7 +45,9 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
     if (strTopic.equals("ac/control"))
     {
         digitalWrite(LED_BUILTIN, HIGH);
+#if ENABLE_IR
         irrecv.sendIR((int *)data_ac, codelen);
+#endif
         digitalWrite(LED_BUILTIN, LOW);
 
         acState = acState ^ 1;
@@ -76,7 +83,9 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
 void turnAcOnOff()
 {
     digitalWrite(LED_BUILTIN, HIGH);
+#if ENABLE_IR
     irrecv.sendIR((int *)data_ac, codelen);
+#endif
     digitalWrite(LED_BUILTIN, LOW);
 
     acState = acState ^ 1;
@@ -123,13 +132,16 @@ void setup()
     mqttClient.setServer(mqttServer, 1883);
     mqttClient.setCallback(mqttCallback);
 
+#if ENABLE_IR
     irrecv.ESP32_IRsendPIN(SEND_PIN, 0);
     irrecv.initSend();
     delay(1000);
-
     Serial.println(codelen);
+#endif
 
+#if ENABLE_DHT22
     dht22setup(&mqttClient);
+#endif
 }
 
 void reconnect()
@@ -174,5 +186,7 @@ void loop()
 
     button.tick();
 
+#if ENABLE_DHT22
     dht22loop();
+#endif
 }
