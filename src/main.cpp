@@ -19,8 +19,8 @@
 #include "dht.h"
 #endif
 
-const char *ssid = "***REMOVED***";
-const char *password = "***REMOVED***";
+const char *ssid = "";
+const char *password = "";
 const char *mqttServer = "***REMOVED***";
 
 // MQTT
