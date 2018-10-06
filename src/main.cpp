@@ -1,198 +1,39 @@
-/**
- * Based on https://github.com/Darryl-Scott/ESP32-RMT-Library-IR-code-RAW
- */
+#include <esphomelib.h>
 
 // Config
-#define ENABLE_IR 1
-#define ENABLE_DHT22 1
+const int SEND_PIN = 26;    // pin on the ESP32
+const int BUTTON_PIN = 12;
 
-#include <Arduino.h>
-#include <WiFi.h>
-#include <PubSubClient.h>
-#include <OneButton.h>
-
-#if ENABLE_IR
-#include "ESP32_IR_Remote.h"
-#endif
-
-#if ENABLE_DHT22
-#include "dht.h"
-#endif
 
 const char *ssid = "";
 const char *password = "";
 const char *mqttServer = "***REMOVED***";
 
-// MQTT
-WiFiClient espClient;
-PubSubClient mqttClient(espClient);
-
-const int SEND_PIN = 26; // pin on the ESP32
-const int BUTTON_PIN = 12;
-
-#if ENABLE_IR
-ESP32_IRrecv irrecv;
-#endif
-
-OneButton button(BUTTON_PIN, true);
-
 // high, low, high, low, ...
 const int data_ac[344] = {9120, -4592, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -8085, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -8064, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, 0};
 int codelen = 343;
 
-int buttonState = -1;
+using namespace esphomelib;
 
-int acState = 0;
-int autoOnOff = 0;
+void setup() {
+    App.set_name("AC-Living");
+    App.init_log();
 
-void mqttCallback(char *topic, byte *payload, unsigned int length)
-{
-    String strTopic(topic);
-    if (strTopic.equals("ac/control"))
-    {
-        digitalWrite(LED_BUILTIN, HIGH);
-#if ENABLE_IR
-        irrecv.sendIR((int *)data_ac, codelen);
-#endif
-        digitalWrite(LED_BUILTIN, LOW);
+    App.init_wifi("***REMOVED***", "***REMOVED***");
+    App.init_ota()->start_safe_mode();
+    App.init_mqtt("***REMOVED***", "", "");
+    App.init_web_server();
 
-        acState = acState ^ 1;
+    // auto *red = App.make_ledc_output(32); // on pin 32, only available with ESP32
+    // auto *green = App.make_ledc_output(33);
+    // auto *blue = App.make_ledc_output(34);
+    // App.make_rgb_light("Livingroom Light", red, green, blue);
+    
+    // App.make_dht_sensor("Livingroom Temperature", "Livingroom Humidity", 12);
 
-        mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
-    }
-    else if (strTopic.equals("ac/status"))
-    {
-        String strPayload((char *)payload);
-        if (strPayload.equals("on"))
-        {
-            acState = 1;
-        }
-        else if (strPayload.equals("off"))
-        {
-            acState = 0;
-        }
-    }
-    else if (strTopic.equals("ac/auto"))
-    {
-        String strPayload((char *)payload);
-        if (strPayload.equals("on"))
-        {
-            autoOnOff = 1;
-        }
-        else if (strPayload.equals("off"))
-        {
-            autoOnOff = 0;
-        }
-    }
+    App.setup();
 }
 
-void turnAcOnOff()
-{
-    digitalWrite(LED_BUILTIN, HIGH);
-#if ENABLE_IR
-    irrecv.sendIR((int *)data_ac, codelen);
-#endif
-    digitalWrite(LED_BUILTIN, LOW);
-
-    acState = acState ^ 1;
-    mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
-}
-
-void setAutoOnOff()
-{
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(100);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-
-    autoOnOff = autoOnOff ^ 1;
-    mqttClient.publish("ac/auto", autoOnOff == 1 ? "on" : "off", true);
-}
-
-void setup()
-{
-    Serial.begin(115200);
-
-    pinMode(LED_BUILTIN, OUTPUT);
-
-    button.attachClick(turnAcOnOff);
-    button.attachDoubleClick(setAutoOnOff);
-
-    // set 80 msec. debouncing time. Default is 50 msec.
-    button.setDebounceTicks(50);
-
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
-
-    mqttClient.setServer(mqttServer, 1883);
-    mqttClient.setCallback(mqttCallback);
-
-#if ENABLE_IR
-    irrecv.ESP32_IRsendPIN(SEND_PIN, 0);
-    irrecv.initSend();
-    delay(1000);
-    Serial.println(codelen);
-#endif
-
-#if ENABLE_DHT22
-    dht22setup(&mqttClient);
-#endif
-}
-
-void reconnect()
-{
-    // Loop until we\"re reconnected
-    while (!mqttClient.connected())
-    {
-        Serial.print("Attempting MQTT connection...");
-        // Attempt to connect
-        if (mqttClient.connect("esp32irblaster"))
-        {
-            Serial.println("connected");
-
-            // Await commands on this topic
-            mqttClient.subscribe("ac/control");
-            // Sync state
-            mqttClient.subscribe("ac/status");
-
-            mqttClient.publish("ac/esp32-wifi", WiFi.localIP().toString().c_str());
-        }
-        else
-        {
-            Serial.print("failed, rc=");
-            Serial.print(mqttClient.state());
-            Serial.println(" try again in 5 seconds");
-            // Wait 5 seconds before retrying
-            delay(5000);
-        }
-    }
-}
-
-int lastDhtRead = 0;
-
-void loop()
-{
-    // Connect MQTT
-    if (!mqttClient.connected())
-    {
-        reconnect();
-    }
-    mqttClient.loop();
-
-    button.tick();
-
-#if ENABLE_DHT22
-    dht22loop();
-#endif
+void loop() {
+    App.loop();
 }
