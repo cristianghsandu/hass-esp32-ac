@@ -2,8 +2,9 @@
 #include <ESP32_IR_Remote.h>
 
 // Config
-const int SEND_PIN = 26; // pin on the ESP32
+const int SEND_PIN = 26;
 const int BUTTON_PIN = 12;
+const int DHT22_PIN = 14;
 
 const char *ssid = "";
 const char *password = "";
@@ -30,7 +31,7 @@ void setup()
     // auto *blue = App.make_ledc_output(34);
     // App.make_rgb_light("Livingroom Light", red, green, blue);
 
-    // App.make_dht_sensor("Livingroom Temperature", "Livingroom Humidity", 12);
+    App.make_dht_sensor("Livingroom Temperature", "Livingroom Humidity", DHT22_PIN);
     auto button = App.make_gpio_switch("Living AC", BUTTON_PIN);
 
     App.setup();
