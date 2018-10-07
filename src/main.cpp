@@ -1,5 +1,7 @@
 #include <esphomelib.h>
 
+#include "ESP_IR_Remote.h"
+
 // Config
 const int SEND_PIN = 26; // pin on the ESP32
 const int BUTTON_PIN = 12;
