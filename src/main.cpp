@@ -16,8 +16,16 @@ int codelen = 343;
 
 using namespace esphomelib;
 
-void onButtonPress(bool state) {
-    Serial.print(state);
+void setupSensors()
+{
+    auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
+    sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
+
+    auto pushButton = App.make_gpio_binary_sensor("AC Push Button", GPIOInputPin(BUTTON_PIN, INPUT_PULLUP));
+    auto clickTrigger = pushButton.gpio->make_click_trigger(0, 2000);
+    clickTrigger->add_on_trigger_callback([](bool state) {
+        Serial.println("Single click, man");
+    });
 }
 
 void setup()
@@ -30,11 +38,7 @@ void setup()
     App.init_mqtt("***REMOVED***", "", "");
     App.init_web_server();
 
-    auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
-    sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
-
-    auto button = App.make_gpio_binary_sensor("AC Push Button", GPIOInputPin(BUTTON_PIN, INPUT_PULLUP));
-    button.gpio->add_on_state_callback(&onButtonPress);
+    setupSensors();
 
     App.setup();
 }
