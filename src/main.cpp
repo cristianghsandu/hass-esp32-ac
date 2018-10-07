@@ -26,13 +26,10 @@ void setup()
     App.init_mqtt("***REMOVED***", "", "");
     App.init_web_server();
 
-    // auto *red = App.make_ledc_output(32); // on pin 32, only available with ESP32
-    // auto *green = App.make_ledc_output(33);
-    // auto *blue = App.make_ledc_output(34);
-    // App.make_rgb_light("Livingroom Light", red, green, blue);
-
-    auto sensor = App.make_dht_sensor("Livingroom Temperature", "Livingroom Humidity", DHT22_PIN, 2000);
+    auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
     sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
+
+    auto button = App.make_gpio_binary_sensor("AC Push Button", BUTTON_PIN);
 
     App.setup();
 }
