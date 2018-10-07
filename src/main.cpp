@@ -1,9 +1,8 @@
 #include <esphomelib.h>
 
 // Config
-const int SEND_PIN = 26;    // pin on the ESP32
+const int SEND_PIN = 26; // pin on the ESP32
 const int BUTTON_PIN = 12;
-
 
 const char *ssid = "";
 const char *password = "";
@@ -15,7 +14,8 @@ int codelen = 343;
 
 using namespace esphomelib;
 
-void setup() {
+void setup()
+{
     App.set_name("AC-Living");
     App.init_log();
 
@@ -28,12 +28,14 @@ void setup() {
     // auto *green = App.make_ledc_output(33);
     // auto *blue = App.make_ledc_output(34);
     // App.make_rgb_light("Livingroom Light", red, green, blue);
-    
+
     // App.make_dht_sensor("Livingroom Temperature", "Livingroom Humidity", 12);
+    auto button = App.make_gpio_switch("Living AC", BUTTON_PIN);
 
     App.setup();
 }
 
-void loop() {
+void loop()
+{
     App.loop();
 }
