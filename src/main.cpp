@@ -16,6 +16,10 @@ int codelen = 343;
 
 using namespace esphomelib;
 
+void onButtonPress(bool state) {
+    Serial.print(state);
+}
+
 void setup()
 {
     App.set_name("AC-Living");
@@ -29,7 +33,8 @@ void setup()
     auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
     sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
 
-    auto button = App.make_gpio_binary_sensor("AC Push Button", BUTTON_PIN);
+    auto button = App.make_gpio_binary_sensor("AC Push Button", GPIOInputPin(BUTTON_PIN, INPUT_PULLUP));
+    button.gpio->add_on_state_callback(&onButtonPress);
 
     App.setup();
 }
