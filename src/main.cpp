@@ -33,8 +33,6 @@ void setup()
 
     auto sensor = App.make_dht_sensor("Livingroom Temperature", "Livingroom Humidity", DHT22_PIN, 2000);
     sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
-    
-    auto button = App.make_gpio_switch("Living AC", BUTTON_PIN);
 
     App.setup();
 }
