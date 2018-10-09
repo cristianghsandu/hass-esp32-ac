@@ -40,7 +40,6 @@ void setupHomeAssistant()
     });
     BinaryState *acAutoState = (BinaryState *)autoOutput;
 
-
     auto acSwitch = App.make_simple_switch("AC", output);
     auto acAutoSwitch = App.make_simple_switch("AC Auto", autoOutput);
 
@@ -51,11 +50,14 @@ void setupHomeAssistant()
     auto clickTrigger = pushButton.gpio->make_click_trigger(50, 2000);
 
     clickTrigger->add_on_trigger_callback([acState, acSwitch](bool state) {
-        if (acState)
-        {
-            acState->invert_state();
-            acSwitch.mqtt->publish_state(acState->get_state());
-        }
+        acState->invert_state();
+        acSwitch.mqtt->publish_state(acState->get_state());
+    });
+
+    auto doubleClickTrigger = pushButton.gpio->make_double_click_trigger(50, 500);
+    doubleClickTrigger->add_on_trigger_callback([acAutoState, acAutoSwitch](bool state) {
+        acAutoState->invert_state();
+        acAutoSwitch.mqtt->publish_state(acAutoState->get_state());
     });
 }
 
