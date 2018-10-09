@@ -12,3 +12,8 @@ void BinaryState::write_enabled(bool state) {
 bool BinaryState::get_state() {
     return this->state;
 }
+
+void BinaryState::invert_state() {
+    this->state = !this->state;
+    this->callback(this->state);
+}

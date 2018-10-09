@@ -18,8 +18,6 @@ const char *ssid = "";
 const char *password = "";
 const char *mqttServer = "***REMOVED***";
 
-BinaryState *acAutoState = NULL;
-
 // high, low, high, low, ...
 const int data_ac[344] = {9120, -4592, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -8085, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -8064, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, 0};
 int codelen = 343;
@@ -34,29 +32,23 @@ void setupHomeAssistant()
         Serial.print("Auto: ");
         Serial.println(state);
     });
+    BinaryState *acAutoState = (BinaryState *)output;
+
     auto acSwitch = App.make_simple_switch("AC Auto", output);
 
     auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
     sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
 
     auto pushButton = App.make_gpio_binary_sensor("AC Push Button", GPIOInputPin(BUTTON_PIN, INPUT_PULLUP));
-    auto clickTrigger = pushButton.gpio->make_click_trigger(0, 2000);
-    clickTrigger->add_on_trigger_callback([acSwitch](bool state) {
+    auto clickTrigger = pushButton.gpio->make_click_trigger(50, 2000);
+
+    clickTrigger->add_on_trigger_callback([acAutoState, acSwitch](bool state) {
         if (acAutoState)
         {
-            auto crtState = acAutoState->get_state();
-            if (crtState) {
-                acAutoState->disable();
-            } else {
-                acAutoState->enable();
-            }
-            
-            acSwitch.mqtt->publish_state(!crtState);
+            acAutoState->invert_state();
+            acSwitch.mqtt->publish_state(acAutoState->get_state());
         }
     });
-
-    // Save it
-    acAutoState = (BinaryState *)output;
 }
 
 void turnAcOnOff()

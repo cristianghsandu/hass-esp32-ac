@@ -14,4 +14,5 @@ class BinaryState : public output::BinaryOutput
     void write_enabled(bool enabled) override;
 
     bool get_state();
+    void invert_state();
 };
