@@ -32,9 +32,17 @@ void setupHomeAssistant()
         Serial.print("Auto: ");
         Serial.println(state);
     });
-    BinaryState *acAutoState = (BinaryState *)output;
+    BinaryState *acState = (BinaryState *)output;
 
-    auto acSwitch = App.make_simple_switch("AC Auto", output);
+    output::BinaryOutput *autoOutput = new BinaryState([](bool state) {
+        Serial.print("Auto: ");
+        Serial.println(state);
+    });
+    BinaryState *acAutoState = (BinaryState *)autoOutput;
+
+
+    auto acSwitch = App.make_simple_switch("AC", output);
+    auto acAutoSwitch = App.make_simple_switch("AC Auto", autoOutput);
 
     auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
     sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
@@ -42,11 +50,11 @@ void setupHomeAssistant()
     auto pushButton = App.make_gpio_binary_sensor("AC Push Button", GPIOInputPin(BUTTON_PIN, INPUT_PULLUP));
     auto clickTrigger = pushButton.gpio->make_click_trigger(50, 2000);
 
-    clickTrigger->add_on_trigger_callback([acAutoState, acSwitch](bool state) {
-        if (acAutoState)
+    clickTrigger->add_on_trigger_callback([acState, acSwitch](bool state) {
+        if (acState)
         {
-            acAutoState->invert_state();
-            acSwitch.mqtt->publish_state(acAutoState->get_state());
+            acState->invert_state();
+            acSwitch.mqtt->publish_state(acState->get_state());
         }
     });
 }
