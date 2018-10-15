@@ -75,13 +75,13 @@ void turnAcOnOff()
 void setupHomeAssistant()
 {
     output::BinaryOutput *output = new BinaryState([](bool state) {
-        Serial.print("Auto: ");
+        Serial.print("AC: ");
         Serial.println(state);
     });
     acState = (BinaryState *)output;
 
     output::BinaryOutput *autoOutput = new BinaryState([](bool state) {
-        Serial.print("Auto: ");
+        Serial.print("AC Auto: ");
         Serial.println(state);
     });
     acAutoState = (BinaryState *)autoOutput;
