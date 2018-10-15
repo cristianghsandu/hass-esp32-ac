@@ -46,19 +46,18 @@ void setupHomeAssistant()
     auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
     sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
 
-    auto pushButton = App.make_gpio_binary_sensor("AC Push Button", GPIOInputPin(BUTTON_PIN, INPUT_PULLUP));
-    auto clickTrigger = pushButton.gpio->make_click_trigger(50, 2000);
+    // auto pushButton = App.make_gpio_binary_sensor("AC Push Button", GPIOInputPin(BUTTON_PIN, INPUT_PULLUP));
+    // auto clickTrigger = pushButton.gpio->make_click_trigger(500, 2000);
+    // clickTrigger->add_on_trigger_callback([acState, acSwitch](bool state) {
+    //     acState->invert_state();
+    //     acSwitch.mqtt->publish_state(acState->get_state());
+    // });
 
-    clickTrigger->add_on_trigger_callback([acState, acSwitch](bool state) {
-        acState->invert_state();
-        acSwitch.mqtt->publish_state(acState->get_state());
-    });
-
-    auto doubleClickTrigger = pushButton.gpio->make_double_click_trigger(50, 500);
-    doubleClickTrigger->add_on_trigger_callback([acAutoState, acAutoSwitch](bool state) {
-        acAutoState->invert_state();
-        acAutoSwitch.mqtt->publish_state(acAutoState->get_state());
-    });
+    // auto doubleClickTrigger = pushButton.gpio->make_double_click_trigger(50, 2000);
+    // doubleClickTrigger->add_on_trigger_callback([acAutoState, acAutoSwitch](bool state) {
+    //     acAutoState->invert_state();
+    //     acAutoSwitch.mqtt->publish_state(acAutoState->get_state());
+    // });
 }
 
 void turnAcOnOff()
