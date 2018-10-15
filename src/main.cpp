@@ -3,8 +3,6 @@
 #include <esphomelib.h>
 #include <OneButton.h>
 
-#define ENABLE_IR 1
-
 #if ENABLE_IR
 #include <ESP32_IR_Remote.h>
 #endif
@@ -101,13 +99,21 @@ void setupHomeAssistant()
     button.attachDoubleClick(setAutoOnOff);
 }
 
-void setup()
+void setupPins()
 {
     pinMode(LED_BUILTIN, OUTPUT);
 
     // Debouncing time
     button.setDebounceTicks(50);
 
+#if ENABLE_IR
+    irrecv.ESP32_IRsendPIN(SEND_PIN, 0);
+    irrecv.initSend();
+#endif
+}
+
+void setup()
+{
     App.set_name("AC-Living");
     App.init_log();
 
@@ -117,6 +123,8 @@ void setup()
     App.init_web_server();
 
     setupHomeAssistant();
+
+    setupPins();
 
     App.setup();
 }
