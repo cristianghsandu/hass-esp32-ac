@@ -3,6 +3,8 @@
 #include <esphomelib.h>
 #include <OneButton.h>
 
+#define ENABLE_IR 1
+
 #if ENABLE_IR
 #include <ESP32_IR_Remote.h>
 #endif
@@ -30,19 +32,61 @@ ESP32_IRrecv irrecv;
 
 OneButton button(BUTTON_PIN, true);
 
+switch_::MQTTSwitchComponent *mqttAcState;
+BinaryState *acState;
+
+switch_::MQTTSwitchComponent *mqttAcAutoState;
+BinaryState *acAutoState;
+
+void setAutoOnOff()
+{
+    if (!acAutoState || !mqttAcAutoState)
+    {
+        return;
+    }
+
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+
+    acAutoState->invert_state();
+    mqttAcAutoState->publish_state(acAutoState->get_state());
+}
+
+void turnAcOnOff()
+{
+    if (!acState || !mqttAcState)
+    {
+        return;
+    }
+
+    digitalWrite(LED_BUILTIN, HIGH);
+#if ENABLE_IR
+    irrecv.sendIR((int *)data_ac, codelen);
+#endif
+    digitalWrite(LED_BUILTIN, LOW);
+
+    acState->invert_state();
+    mqttAcState->publish_state(acState->get_state());
+}
+
 void setupHomeAssistant()
 {
     output::BinaryOutput *output = new BinaryState([](bool state) {
         Serial.print("Auto: ");
         Serial.println(state);
     });
-    BinaryState *acState = (BinaryState *)output;
+    acState = (BinaryState *)output;
 
     output::BinaryOutput *autoOutput = new BinaryState([](bool state) {
         Serial.print("Auto: ");
         Serial.println(state);
     });
-    BinaryState *acAutoState = (BinaryState *)autoOutput;
+    acAutoState = (BinaryState *)autoOutput;
 
     auto acSwitch = App.make_simple_switch("AC", output);
     auto acAutoSwitch = App.make_simple_switch("AC Auto", autoOutput);
@@ -50,27 +94,11 @@ void setupHomeAssistant()
     auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
     sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
 
-    // auto pushButton = App.make_gpio_binary_sensor("AC Push Button", GPIOInputPin(BUTTON_PIN, INPUT_PULLUP));
-    // auto clickTrigger = pushButton.gpio->make_click_trigger(500, 2000);
-    // clickTrigger->add_on_trigger_callback([acState, acSwitch](bool state) {
-    //     acState->invert_state();
-    //     acSwitch.mqtt->publish_state(acState->get_state());
-    // });
+    mqttAcState = acSwitch.mqtt;
+    mqttAcAutoState = acAutoSwitch.mqtt;
 
-    // auto doubleClickTrigger = pushButton.gpio->make_double_click_trigger(50, 2000);
-    // doubleClickTrigger->add_on_trigger_callback([acAutoState, acAutoSwitch](bool state) {
-    //     acAutoState->invert_state();
-    //     acAutoSwitch.mqtt->publish_state(acAutoState->get_state());
-    // });
-}
-
-void turnAcOnOff()
-{
-    digitalWrite(LED_BUILTIN, HIGH);
-#if ENABLE_IR
-    irrecv.sendIR((int *)data_ac, codelen);
-#endif
-    digitalWrite(LED_BUILTIN, LOW);
+    button.attachClick(turnAcOnOff);
+    button.attachDoubleClick(setAutoOnOff);
 }
 
 void setup()
@@ -90,5 +118,7 @@ void setup()
 
 void loop()
 {
+    button.tick();
+
     App.loop();
 }
