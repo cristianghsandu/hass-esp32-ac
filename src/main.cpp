@@ -103,6 +103,11 @@ void setupHomeAssistant()
 
 void setup()
 {
+    pinMode(LED_BUILTIN, OUTPUT);
+
+    // Debouncing time
+    button.setDebounceTicks(50);
+
     App.set_name("AC-Living");
     App.init_log();
 
