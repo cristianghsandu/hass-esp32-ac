@@ -1,6 +1,8 @@
 #include "config.h"
 
 #include <esphomelib.h>
+#include <OneButton.h>
+
 #if ENABLE_IR
 #include <ESP32_IR_Remote.h>
 #endif
@@ -25,6 +27,8 @@ int codelen = 343;
 #if ENABLE_IR
 ESP32_IRrecv irrecv;
 #endif
+
+OneButton button(BUTTON_PIN, true);
 
 void setupHomeAssistant()
 {
