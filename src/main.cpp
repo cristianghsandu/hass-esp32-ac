@@ -55,7 +55,8 @@ void setAutoOnOff()
     mqttAcAutoState->publish_state(acAutoState->get_state());
 }
 
-void turnAcOnOff()
+
+void turnAcOnOff(bool publish = true)
 {
     if (!acState || !mqttAcState)
     {
@@ -68,8 +69,16 @@ void turnAcOnOff()
 #endif
     digitalWrite(LED_BUILTIN, LOW);
 
-    acState->invert_state();
-    mqttAcState->publish_state(acState->get_state());
+    if (publish)
+    {
+        acState->invert_state();
+        mqttAcState->publish_state(acState->get_state());
+    }
+}
+
+void onButtonClick()
+{
+    turnAcOnOff();
 }
 
 void setupHomeAssistant()
@@ -77,6 +86,7 @@ void setupHomeAssistant()
     output::BinaryOutput *output = new BinaryState([](bool state) {
         Serial.print("AC: ");
         Serial.println(state);
+        // turnAcOnOff(false); // Publishing the state back to MQTT will create an infinite loop
     });
     acState = (BinaryState *)output;
 
@@ -95,7 +105,7 @@ void setupHomeAssistant()
     mqttAcState = acSwitch.mqtt;
     mqttAcAutoState = acAutoSwitch.mqtt;
 
-    button.attachClick(turnAcOnOff);
+    button.attachClick(onButtonClick);
     button.attachDoubleClick(setAutoOnOff);
 }
 
