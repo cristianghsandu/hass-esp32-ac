@@ -50,13 +50,9 @@ void setAutoOnOff()
     digitalWrite(LED_BUILTIN, HIGH);
     delay(100);
     digitalWrite(LED_BUILTIN, LOW);
-
-    acAutoState->invert_state();
-    mqttAcAutoState->publish_state(acAutoState->get_state());
 }
 
-
-void turnAcOnOff(bool publish = true)
+void turnAcOnOff()
 {
     if (!acState || !mqttAcState)
     {
@@ -68,31 +64,37 @@ void turnAcOnOff(bool publish = true)
     irrecv.sendIR((int *)data_ac, codelen);
 #endif
     digitalWrite(LED_BUILTIN, LOW);
-
-    if (publish)
-    {
-        acState->invert_state();
-        mqttAcState->publish_state(acState->get_state());
-    }
 }
 
-void onButtonClick()
+void switchAcState()
 {
-    turnAcOnOff();
+    acState->invert_state();
+    mqttAcState->publish_state(acState->get_state());
+}
+
+void switchAutoAcOnOff()
+{
+    acAutoState->invert_state();
+    mqttAcAutoState->publish_state(acAutoState->get_state());
 }
 
 void setupHomeAssistant()
 {
     output::BinaryOutput *output = new BinaryState([](bool state) {
-        Serial.print("AC: ");
-        Serial.println(state);
-        // turnAcOnOff(false); // Publishing the state back to MQTT will create an infinite loop
+        static bool initialSync = true;
+        if (initialSync) {
+            initialSync = false;
+            return;
+        }
+        
+        turnAcOnOff();
+
+        ESP_LOGCONFIG(TAG, "AC state: %d", state);
     });
     acState = (BinaryState *)output;
 
     output::BinaryOutput *autoOutput = new BinaryState([](bool state) {
-        Serial.print("AC Auto: ");
-        Serial.println(state);
+        ESP_LOGCONFIG(TAG, "AC auto on/off state: %d", state);
     });
     acAutoState = (BinaryState *)autoOutput;
 
@@ -105,8 +107,8 @@ void setupHomeAssistant()
     mqttAcState = acSwitch.mqtt;
     mqttAcAutoState = acAutoSwitch.mqtt;
 
-    button.attachClick(onButtonClick);
-    button.attachDoubleClick(setAutoOnOff);
+    button.attachClick(switchAcState);
+    button.attachDoubleClick(switchAutoAcOnOff);
 }
 
 void setupPins()
