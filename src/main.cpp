@@ -116,9 +116,9 @@ void setup()
     App.set_name("AC-Living");
     App.init_log();
 
-    App.init_wifi("***REMOVED***", "***REMOVED***");
+    App.init_wifi(ssid, password);
     App.init_ota()->start_safe_mode();
-    App.init_mqtt("***REMOVED***", "", "");
+    App.init_mqtt(mqttServer, "", "");
     App.init_web_server();
 
     setupHomeAssistant();
