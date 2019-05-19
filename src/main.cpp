@@ -85,14 +85,14 @@ void setupHomeAssistant()
     });
     acAutoState = (BinaryState *)autoOutput;
 
-    auto acSwitch = App.make_simple_switch("AC", output);
-    auto acAutoSwitch = App.make_simple_switch("AC Auto", autoOutput);
+    auto acSwitch = App.make_output_switch("AC", output);
+    auto acAutoSwitch = App.make_output_switch("AC Auto", autoOutput);
 
     auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
-    sensor.dht->set_dht_model(sensor::DHT_MODEL_DHT22);
+    sensor->set_dht_model(sensor::DHT_MODEL_DHT22);
 
-    mqttAcState = acSwitch.mqtt;
-    mqttAcAutoState = acAutoSwitch.mqtt;
+    mqttAcState = new switch_::MQTTSwitchComponent(acSwitch);
+    mqttAcAutoState = new switch_::MQTTSwitchComponent(acAutoSwitch);
 
     button.attachClick(switchAcState);
     button.attachDoubleClick(switchAutoAcOnOff);
@@ -119,7 +119,7 @@ void setup()
     App.init_wifi(ssid, password);
     App.init_ota()->start_safe_mode();
     App.init_mqtt(mqttServer, "", "");
-    App.init_web_server();
+    App.init_api_server();
 
     setupHomeAssistant();
 

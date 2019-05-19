@@ -11,7 +11,7 @@ class BinaryState : public output::BinaryOutput
   public:
     BinaryState(std::function<void(bool)> callback);
 
-    void write_enabled(bool enabled) override;
+    void write_state(bool state) override;
 
     bool get_state();
     void invert_state();

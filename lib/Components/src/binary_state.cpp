@@ -4,7 +4,7 @@ BinaryState::BinaryState(std::function<void(bool)> callback) : BinaryOutput() {
     this->callback = callback;
 }
 
-void BinaryState::write_enabled(bool state) {
+void BinaryState::write_state(bool state) {
     this->state = state;
     this->callback(state);
 }
