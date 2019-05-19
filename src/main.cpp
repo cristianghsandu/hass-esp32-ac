@@ -1,6 +1,6 @@
 #include "config.h"
 
-#include <esphomelib.h>
+#include <esphome.h>
 #include <OneButton.h>
 
 #if ENABLE_IR
@@ -9,7 +9,7 @@
 
 #include <binary_state.h>
 
-using namespace esphomelib;
+using namespace esphome;
 
 #if ENABLE_IR
 ESP32_IRrecv irrecv;
