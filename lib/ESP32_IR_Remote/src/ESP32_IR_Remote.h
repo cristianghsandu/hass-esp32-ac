@@ -1,5 +1,5 @@
 
- /* Copyright (c) 2018 Darryl Scott. All Rights Reserved.
+/* Copyright (c) 2018 Darryl Scott. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,12 +22,12 @@
  * to build on the existing IR libraries out there.
  */
 
-
 #ifndef ESP32_IR_REMOTE_H_
 #define ESP32_IR_REMOTE_H_
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #include <stdint.h>
@@ -43,25 +43,26 @@ extern "C" {
 }
 #endif
 
-class ESP32_IRrecv {
+class ESP32_IRrecv
+{
   public:
     ESP32_IRrecv();
-    void ESP32_IRrecvPIN (int recvpin);
-    void ESP32_IRsendPIN (int sendpin);
-    void ESP32_IRrecvPIN (int recvpin, int port);
-    void ESP32_IRsendPIN (int sendpin, int port);
+    void ESP32_IRrecvPIN(int recvpin);
+    void ESP32_IRsendPIN(int sendpin);
+    void ESP32_IRrecvPIN(int recvpin, int port);
+    void ESP32_IRsendPIN(int sendpin, int port);
     void initReceive();
     void initSend();
     void stopIR();
-    int  readIR(int* data, int maxBuf);
-    void sendIR(int* data, int IRlength);
+    int readIR(int *data, int maxBuf);
+    void sendIR(int *data, int IRlength);
 
   private:
     int gpionum;
     int rmtport;
-    void decodeRAW(rmt_item32_t *data, int numItems, int* datato);
-    void getDataIR(rmt_item32_t item, int* datato, int index);
-    void buildItem(rmt_item32_t &item,int high_us,int low_us);  
+    void decodeRAW(rmt_item32_t *data, int numItems, int *datato);
+    void getDataIR(rmt_item32_t item, int *datato, int index);
+    void buildItem(rmt_item32_t &item, int high_us, int low_us);
 };
 
 #endif /* ESP32_IR_REMOTE_H_ */

@@ -1,4 +1,3 @@
-
 /* Copyright (c) 2018 Darryl Scott. All Rights Reserved.
  *
  * This program is free software: you can redistribute it and/or modify

@@ -1,34 +1,15 @@
-/**
- * Based on https://github.com/Darryl-Scott/ESP32-RMT-Library-IR-code-RAW
- */
+#include "config.h"
 
-// Config
-#define ENABLE_IR 1
-#define ENABLE_DHT22 1
-
-#include <Arduino.h>
-#include <WiFi.h>
-#include <PubSubClient.h>
+#include <esphome.h>
 #include <OneButton.h>
 
 #if ENABLE_IR
-#include "ESP32_IR_Remote.h"
+#include <ESP32_IR_Remote.h>
 #endif
 
-#if ENABLE_DHT22
-#include "dht.h"
-#endif
+#include <binary_state.h>
 
-const char *ssid = "***REMOVED***";
-const char *password = "***REMOVED***";
-const char *mqttServer = "***REMOVED***";
-
-// MQTT
-WiFiClient espClient;
-PubSubClient mqttClient(espClient);
-
-const int SEND_PIN = 26; // pin on the ESP32
-const int BUTTON_PIN = 12;
+using namespace esphome;
 
 #if ENABLE_IR
 ESP32_IRrecv irrecv;
@@ -36,163 +17,120 @@ ESP32_IRrecv irrecv;
 
 OneButton button(BUTTON_PIN, true);
 
-// high, low, high, low, ...
-const int data_ac[344] = {9120, -4592, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -8085, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -1745, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -1745, 555, -1745, 555, -8064, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -1745, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, -555, 555, 0};
-int codelen = 343;
+switch_::MQTTSwitchComponent *mqttAcState;
+BinaryState *acState;
 
-int buttonState = -1;
+switch_::MQTTSwitchComponent *mqttAcAutoState;
+BinaryState *acAutoState;
 
-int acState = 0;
-int autoOnOff = 0;
-
-void mqttCallback(char *topic, byte *payload, unsigned int length)
+void setAutoOnOff()
 {
-    String strTopic(topic);
-    if (strTopic.equals("ac/control"))
+    if (!acAutoState || !mqttAcAutoState)
     {
-        digitalWrite(LED_BUILTIN, HIGH);
-#if ENABLE_IR
-        irrecv.sendIR((int *)data_ac, codelen);
-#endif
-        digitalWrite(LED_BUILTIN, LOW);
+        return;
+    }
 
-        acState = acState ^ 1;
-
-        mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
-    }
-    else if (strTopic.equals("ac/status"))
-    {
-        String strPayload((char *)payload);
-        if (strPayload.equals("on"))
-        {
-            acState = 1;
-        }
-        else if (strPayload.equals("off"))
-        {
-            acState = 0;
-        }
-    }
-    else if (strTopic.equals("ac/auto"))
-    {
-        String strPayload((char *)payload);
-        if (strPayload.equals("on"))
-        {
-            autoOnOff = 1;
-        }
-        else if (strPayload.equals("off"))
-        {
-            autoOnOff = 0;
-        }
-    }
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
+    delay(100);
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(100);
+    digitalWrite(LED_BUILTIN, LOW);
 }
 
 void turnAcOnOff()
 {
+    if (!acState || !mqttAcState)
+    {
+        return;
+    }
+
     digitalWrite(LED_BUILTIN, HIGH);
 #if ENABLE_IR
     irrecv.sendIR((int *)data_ac, codelen);
 #endif
     digitalWrite(LED_BUILTIN, LOW);
-
-    acState = acState ^ 1;
-    mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
 }
 
-void setAutoOnOff()
+void switchAcState()
 {
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(100);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-
-    autoOnOff = autoOnOff ^ 1;
-    mqttClient.publish("ac/auto", autoOnOff == 1 ? "on" : "off", true);
+    acState->invert_state();
+    mqttAcState->publish_state(acState->get_state());
 }
 
-void setup()
+void switchAutoAcOnOff()
 {
-    Serial.begin(115200);
+    acAutoState->invert_state();
+    mqttAcAutoState->publish_state(acAutoState->get_state());
+}
 
+void setupHomeAssistant()
+{
+    output::BinaryOutput *output = new BinaryState([](bool state) {
+        static bool initialSync = true;
+        if (initialSync) {
+            initialSync = false;
+            return;
+        }
+        
+        turnAcOnOff();
+
+        ESP_LOGCONFIG(TAG, "AC state: %d", state);
+    });
+    acState = (BinaryState *)output;
+
+    output::BinaryOutput *autoOutput = new BinaryState([](bool state) {
+        ESP_LOGCONFIG(TAG, "AC auto on/off state: %d", state);
+    });
+    acAutoState = (BinaryState *)autoOutput;
+
+    auto acSwitch = App.make_output_switch("AC", output);
+    auto acAutoSwitch = App.make_output_switch("AC Auto", autoOutput);
+
+    auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
+    sensor->set_dht_model(sensor::DHT_MODEL_DHT22);
+
+    mqttAcState = new switch_::MQTTSwitchComponent(acSwitch);
+    mqttAcAutoState = new switch_::MQTTSwitchComponent(acAutoSwitch);
+
+    button.attachClick(switchAcState);
+    button.attachDoubleClick(switchAutoAcOnOff);
+}
+
+void setupPins()
+{
     pinMode(LED_BUILTIN, OUTPUT);
 
-    button.attachClick(turnAcOnOff);
-    button.attachDoubleClick(setAutoOnOff);
-
-    // set 80 msec. debouncing time. Default is 50 msec.
+    // Debouncing time
     button.setDebounceTicks(50);
-
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        delay(500);
-        Serial.print(".");
-    }
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
-
-    mqttClient.setServer(mqttServer, 1883);
-    mqttClient.setCallback(mqttCallback);
 
 #if ENABLE_IR
     irrecv.ESP32_IRsendPIN(SEND_PIN, 0);
     irrecv.initSend();
-    delay(1000);
-    Serial.println(codelen);
-#endif
-
-#if ENABLE_DHT22
-    dht22setup(&mqttClient);
 #endif
 }
 
-void reconnect()
+void setup()
 {
-    // Loop until we\"re reconnected
-    while (!mqttClient.connected())
-    {
-        Serial.print("Attempting MQTT connection...");
-        // Attempt to connect
-        if (mqttClient.connect("esp32irblaster"))
-        {
-            Serial.println("connected");
+    App.set_name("AC-Living");
+    App.init_log();
 
-            // Await commands on this topic
-            mqttClient.subscribe("ac/control");
-            // Sync state
-            mqttClient.subscribe("ac/status");
+    App.init_wifi(ssid, password);
+    App.init_ota()->start_safe_mode();
+    App.init_mqtt(mqttServer, "", "");
+    App.init_api_server();
 
-            mqttClient.publish("ac/esp32-wifi", WiFi.localIP().toString().c_str());
-        }
-        else
-        {
-            Serial.print("failed, rc=");
-            Serial.print(mqttClient.state());
-            Serial.println(" try again in 5 seconds");
-            // Wait 5 seconds before retrying
-            delay(5000);
-        }
-    }
+    setupHomeAssistant();
+
+    setupPins();
+
+    App.setup();
 }
-
-int lastDhtRead = 0;
 
 void loop()
 {
-    // Connect MQTT
-    if (!mqttClient.connected())
-    {
-        reconnect();
-    }
-    mqttClient.loop();
-
     button.tick();
 
-#if ENABLE_DHT22
-    dht22loop();
-#endif
+    App.loop();
 }
