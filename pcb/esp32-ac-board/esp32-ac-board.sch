@@ -1,5 +1,6 @@
 EESchema Schematic File Version 4
-EELAYER 26 0
+LIBS:esp32-ac-board-cache
+EELAYER 29 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -13,17 +14,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-$Comp
-L ESP32:ESP32_Devkit_DOIT_V1 ESP32
-U 1 1 5D00B2BB
-P 9275 3975
-F 0 "ESP32" V 9328 3072 60  0000 R CNN
-F 1 "ESP32_Devkit_DOIT_V1" V 9195 3072 60  0000 R CNN
-F 2 "ESP32:ESP32_Devkit_DOIT_V1" H 9275 3975 60  0001 C CNN
-F 3 "" H 9275 3975 60  0001 C CNN
-	1    9275 3975
-	0    -1   -1   0   
-$EndComp
 Wire Wire Line
 	8625 4750 8625 4700
 Wire Wire Line
@@ -77,12 +67,12 @@ Wire Wire Line
 $Comp
 L ESP32:DHT DHT_22
 U 1 1 5CFE2AF9
-P 6725 2750
-F 0 "DHT_22" V 6741 2522 60  0000 R CNN
-F 1 "DHT" V 6635 2522 60  0000 R CNN
-F 2 "ESP32:DHT" H 6450 2725 60  0001 C CNN
-F 3 "" H 6450 2725 60  0001 C CNN
-	1    6725 2750
+P 6925 2200
+F 0 "DHT_22" V 6941 1972 60  0000 R CNN
+F 1 "DHT" V 6835 1972 60  0000 R CNN
+F 2 "ESP32:DHT" H 6650 2175 60  0001 C CNN
+F 3 "" H 6650 2175 60  0001 C CNN
+	1    6925 2200
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -103,48 +93,36 @@ Wire Wire Line
 $Comp
 L power:GND #PWR0101
 U 1 1 5CFF6733
-P 6225 4550
-F 0 "#PWR0101" H 6225 4300 50  0001 C CNN
-F 1 "GND" H 6230 4377 50  0000 C CNN
-F 2 "" H 6225 4550 50  0001 C CNN
-F 3 "" H 6225 4550 50  0001 C CNN
-	1    6225 4550
+P 6225 4575
+F 0 "#PWR0101" H 6225 4325 50  0001 C CNN
+F 1 "GND" H 6230 4402 50  0000 C CNN
+F 2 "" H 6225 4575 50  0001 C CNN
+F 3 "" H 6225 4575 50  0001 C CNN
+	1    6225 4575
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	6225 4275 6225 4550
 Wire Wire Line
 	6225 3875 6225 3675
 Wire Wire Line
 	6225 3675 5800 3675
 Wire Wire Line
-	5275 3675 5500 3675
-Wire Wire Line
-	10025 4700 10025 4750
-Wire Wire Line
-	6575 3325 6675 3325
-Wire Wire Line
-	6675 3325 6675 3225
+	6875 2775 6875 2675
 $Comp
 L Device:R R1
 U 1 1 5D00DF0A
-P 6450 3450
-F 0 "R1" H 6250 3450 50  0000 L CNN
-F 1 "R" H 6520 3405 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 6380 3450 50  0001 C CNN
-F 3 "~" H 6450 3450 50  0001 C CNN
-	1    6450 3450
-	1    0    0    -1  
+P 6750 2950
+F 0 "R1" H 6550 2950 50  0000 L CNN
+F 1 "R" H 6820 2905 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 6680 2950 50  0001 C CNN
+F 3 "~" H 6750 2950 50  0001 C CNN
+	1    6750 2950
+	0    1    1    0   
 $EndComp
 Wire Wire Line
-	6450 3300 6450 3225
-Connection ~ 6450 3225
+	6650 2750 6650 2675
+Connection ~ 6650 2675
 Wire Wire Line
-	6450 3225 6575 3225
-Wire Wire Line
-	6450 3600 6575 3600
-Wire Wire Line
-	6575 3600 6575 3325
+	6650 2675 6775 2675
 Wire Wire Line
 	9825 4700 9825 4750
 $Comp
@@ -159,16 +137,16 @@ F 3 "~" H 6325 4075 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	6225 3225 6450 3225
-Text Label 6225 3225 0    50   ~ 0
+	6425 2675 6650 2675
+Text Label 6425 2675 0    50   ~ 0
 3V3
 Text Label 10025 3175 0    50   ~ 0
 3V3
 $Comp
-L power:GND #PWR?
+L power:GND #PWR04
 U 1 1 5CFEB9A4
 P 9925 4925
-F 0 "#PWR?" H 9925 4675 50  0001 C CNN
+F 0 "#PWR04" H 9925 4675 50  0001 C CNN
 F 1 "GND" H 9930 4752 50  0000 C CNN
 F 2 "" H 9925 4925 50  0001 C CNN
 F 3 "" H 9925 4925 50  0001 C CNN
@@ -177,21 +155,269 @@ F 3 "" H 9925 4925 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	9925 4700 9925 4925
-Text Label 5275 3675 0    50   ~ 0
-VIN
-Text Label 10025 4750 0    50   ~ 0
-VIN
 $Comp
-L power:GND #PWR?
+L power:GND #PWR02
 U 1 1 5CFEC7DB
-P 6875 3400
-F 0 "#PWR?" H 6875 3150 50  0001 C CNN
-F 1 "GND" H 6880 3227 50  0000 C CNN
-F 2 "" H 6875 3400 50  0001 C CNN
-F 3 "" H 6875 3400 50  0001 C CNN
-	1    6875 3400
+P 7075 2850
+F 0 "#PWR02" H 7075 2600 50  0001 C CNN
+F 1 "GND" H 7080 2677 50  0000 C CNN
+F 2 "" H 7075 2850 50  0001 C CNN
+F 3 "" H 7075 2850 50  0001 C CNN
+	1    7075 2850
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6875 3400 6875 3225
+	7075 2850 7075 2675
+$Comp
+L power:VCC #PWR01
+U 1 1 5CFF060E
+P 5250 3375
+F 0 "#PWR01" H 5250 3225 50  0001 C CNN
+F 1 "VCC" H 5267 3548 50  0000 C CNN
+F 2 "" H 5250 3375 50  0001 C CNN
+F 3 "" H 5250 3375 50  0001 C CNN
+	1    5250 3375
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5250 3675 5500 3675
+Wire Wire Line
+	5250 3375 5250 3675
+$Comp
+L power:VCC #PWR05
+U 1 1 5CFF29F8
+P 10325 4825
+F 0 "#PWR05" H 10325 4675 50  0001 C CNN
+F 1 "VCC" H 10342 4998 50  0000 C CNN
+F 2 "" H 10325 4825 50  0001 C CNN
+F 3 "" H 10325 4825 50  0001 C CNN
+	1    10325 4825
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10325 4825 10025 4825
+Wire Wire Line
+	10025 4700 10025 4825
+Text Label 9425 4750 3    50   ~ 0
+SEND
+$Comp
+L ESP32:ESP32_Devkit_DOIT_V1 ESP32
+U 1 1 5D00B2BB
+P 9275 3975
+F 0 "ESP32" V 9328 3072 60  0000 R CNN
+F 1 "ESP32_Devkit_DOIT_V1" V 9195 3072 60  0000 R CNN
+F 2 "ESP32:ESP32_Devkit_DOIT_V1" H 9275 3975 60  0001 C CNN
+F 3 "" H 9275 3975 60  0001 C CNN
+	1    9275 3975
+	0    -1   -1   0   
+$EndComp
+Text Label 6650 4075 0    50   ~ 0
+SEND
+Text Label 9625 4750 3    50   ~ 0
+TEMP
+Wire Wire Line
+	6900 2950 6900 2775
+Wire Wire Line
+	6900 2775 6875 2775
+Wire Wire Line
+	6650 2750 6600 2750
+Wire Wire Line
+	6600 2750 6600 2950
+Wire Wire Line
+	6900 2950 6900 3225
+Connection ~ 6900 2950
+Text Label 6900 3225 0    50   ~ 0
+TEMP
+Text Label 9725 4750 3    50   ~ 0
+BTN
+Text Label 9025 2125 0    50   ~ 0
+BTN
+$Comp
+L power:GND #PWR03
+U 1 1 5CFFF837
+P 8275 2125
+F 0 "#PWR03" H 8275 1875 50  0001 C CNN
+F 1 "GND" H 8280 1952 50  0000 C CNN
+F 2 "" H 8275 2125 50  0001 C CNN
+F 3 "" H 8275 2125 50  0001 C CNN
+	1    8275 2125
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x15 J2
+U 1 1 5D00F2B8
+P 8500 5450
+F 0 "J2" V 8625 5446 50  0000 C CNN
+F 1 "Conn_01x15" V 8716 5446 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x15_P2.54mm_Vertical" H 8500 5450 50  0001 C CNN
+F 3 "~" H 8500 5450 50  0001 C CNN
+	1    8500 5450
+	0    1    1    0   
+$EndComp
+Text Label 8625 4750 3    50   ~ 0
+EN
+Text Label 9125 6000 3    50   ~ 0
+EN
+Text Label 9225 6000 3    50   ~ 0
+36
+Text Label 8725 4750 3    50   ~ 0
+36
+Text Label 9325 6000 3    50   ~ 0
+39
+Text Label 8825 4750 3    50   ~ 0
+39
+Text Label 8925 4750 3    50   ~ 0
+34
+Text Label 9025 4750 3    50   ~ 0
+35
+Text Label 9425 6000 3    50   ~ 0
+34
+Text Label 9525 6000 3    50   ~ 0
+35
+Text Label 9125 4750 3    50   ~ 0
+32
+Text Label 9625 6000 3    50   ~ 0
+32
+Text Label 9225 4750 3    50   ~ 0
+33
+Text Label 9725 6000 3    50   ~ 0
+33
+Text Label 9325 4750 3    50   ~ 0
+25
+Text Label 9925 6000 3    50   ~ 0
+SEND
+Text Label 9525 4750 3    50   ~ 0
+27
+Text Label 10025 6000 3    50   ~ 0
+27
+Text Label 10125 6000 3    50   ~ 0
+TEMP
+Text Label 10325 6000 3    50   ~ 0
+13
+Text Label 9825 4750 3    50   ~ 0
+13
+Text Label 10225 6000 3    50   ~ 0
+BTN
+Text Label 9825 6000 3    50   ~ 0
+25
+$Comp
+L power:GND #PWR0102
+U 1 1 5D01872D
+P 10500 6375
+F 0 "#PWR0102" H 10500 6125 50  0001 C CNN
+F 1 "GND" H 10505 6202 50  0000 C CNN
+F 2 "" H 10500 6375 50  0001 C CNN
+F 3 "" H 10500 6375 50  0001 C CNN
+	1    10500 6375
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	10500 6375 10425 6375
+$Comp
+L power:VCC #PWR0103
+U 1 1 5D01AC3E
+P 10675 6175
+F 0 "#PWR0103" H 10675 6025 50  0001 C CNN
+F 1 "VCC" H 10692 6348 50  0000 C CNN
+F 2 "" H 10675 6175 50  0001 C CNN
+F 3 "" H 10675 6175 50  0001 C CNN
+	1    10675 6175
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	10675 6175 10750 6175
+Wire Wire Line
+	10750 6175 10750 6000
+Wire Wire Line
+	10750 6000 10525 6000
+Wire Wire Line
+	10425 6375 10425 6000
+$Comp
+L Connector_Generic:Conn_01x15 J1
+U 1 1 5D00DC6E
+P 9825 5800
+F 0 "J1" V 10042 5796 50  0000 C CNN
+F 1 "Conn_01x15" V 9951 5796 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x15_P2.54mm_Vertical" H 9825 5800 50  0001 C CNN
+F 3 "~" H 9825 5800 50  0001 C CNN
+	1    9825 5800
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6225 4275 6225 4575
+Text Label 9200 5250 0    50   ~ 0
+3V3
+Text Label 9100 5250 1    50   ~ 0
+GND
+Text Label 9000 5250 1    50   ~ 0
+15
+Text Label 8900 5250 1    50   ~ 0
+2
+Text Label 9925 3175 1    50   ~ 0
+GND
+Text Label 9825 3175 1    50   ~ 0
+15
+Text Label 9725 3175 1    50   ~ 0
+2
+Text Label 9625 3175 1    50   ~ 0
+4
+Text Label 9525 3175 1    50   ~ 0
+16
+Text Label 9425 3175 1    50   ~ 0
+17
+Text Label 9325 3175 1    50   ~ 0
+5
+Text Label 9225 3175 1    50   ~ 0
+18
+Wire Wire Line
+	9125 3250 9125 3175
+Text Label 9125 3175 1    50   ~ 0
+19
+Text Label 9025 3175 1    50   ~ 0
+21
+Text Label 8925 3175 1    50   ~ 0
+3
+Text Label 8825 3175 1    50   ~ 0
+1
+Text Label 8725 3175 1    50   ~ 0
+22
+Text Label 8625 3175 1    50   ~ 0
+23
+Text Label 8800 5250 1    50   ~ 0
+4
+Text Label 8700 5250 1    50   ~ 0
+16
+Text Label 8600 5250 1    50   ~ 0
+17
+Text Label 8500 5250 1    50   ~ 0
+5
+Text Label 8400 5250 1    50   ~ 0
+18
+Text Label 8300 5250 1    50   ~ 0
+19
+Text Label 8200 5250 1    50   ~ 0
+21
+Text Label 8100 5250 1    50   ~ 0
+3
+Text Label 8000 5250 1    50   ~ 0
+1
+Text Label 7900 5250 1    50   ~ 0
+22
+Text Label 7800 5250 1    50   ~ 0
+23
+$Comp
+L Switch:SW_Push SW1
+U 1 1 5D04F293
+P 8675 2125
+F 0 "SW1" H 8675 2410 50  0000 C CNN
+F 1 "SW_Push" H 8675 2319 50  0000 C CNN
+F 2 "Button_Switch_THT:SW_PUSH-12mm" H 8675 2325 50  0001 C CNN
+F 3 "~" H 8675 2325 50  0001 C CNN
+	1    8675 2125
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8275 2125 8475 2125
+Wire Wire Line
+	8875 2125 9025 2125
 $EndSCHEMATC
