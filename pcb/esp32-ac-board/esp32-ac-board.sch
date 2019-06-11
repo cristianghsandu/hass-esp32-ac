@@ -320,8 +320,6 @@ Text Label 8450 5875 3    50   ~ 0
 15
 Text Label 8350 5875 3    50   ~ 0
 2
-Text Label 9925 3175 1    50   ~ 0
-GND
 Text Label 9825 3175 1    50   ~ 0
 15
 Text Label 9725 3175 1    50   ~ 0
@@ -420,4 +418,6 @@ F 3 "" H 10900 6175 50  0001 C CNN
 	1    10900 6175
 	1    0    0    -1  
 $EndComp
+Text Label 9925 3175 1    50   ~ 0
+GND
 $EndSCHEMATC

@@ -224,13 +224,13 @@ $EndComp
 $Comp
 L Connector_Generic:Conn_01x15 J2
 U 1 1 5D00F2B8
-P 8500 5450
-F 0 "J2" V 8625 5446 50  0000 C CNN
-F 1 "Conn_01x15" V 8716 5446 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x15_P2.54mm_Vertical" H 8500 5450 50  0001 C CNN
-F 3 "~" H 8500 5450 50  0001 C CNN
-	1    8500 5450
-	0    1    1    0   
+P 7950 5675
+F 0 "J2" V 8075 5671 50  0000 C CNN
+F 1 "Conn_01x15" V 8166 5671 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x15_P2.54mm_Vertical" H 7950 5675 50  0001 C CNN
+F 3 "~" H 7950 5675 50  0001 C CNN
+	1    7950 5675
+	0    -1   -1   0   
 $EndComp
 Text Label 8625 4750 3    50   ~ 0
 EN
@@ -312,16 +312,14 @@ F 3 "~" H 9825 5800 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	6225 4275 6225 4575
-Text Label 9200 5250 0    50   ~ 0
+Text Label 8650 5875 3    50   ~ 0
 3V3
-Text Label 9100 5250 1    50   ~ 0
+Text Label 8550 5875 3    50   ~ 0
 GND
-Text Label 9000 5250 1    50   ~ 0
+Text Label 8450 5875 3    50   ~ 0
 15
-Text Label 8900 5250 1    50   ~ 0
+Text Label 8350 5875 3    50   ~ 0
 2
-Text Label 9925 3175 1    50   ~ 0
-GND
 Text Label 9825 3175 1    50   ~ 0
 15
 Text Label 9725 3175 1    50   ~ 0
@@ -350,27 +348,27 @@ Text Label 8725 3175 1    50   ~ 0
 22
 Text Label 8625 3175 1    50   ~ 0
 23
-Text Label 8800 5250 1    50   ~ 0
+Text Label 8250 5875 3    50   ~ 0
 4
-Text Label 8700 5250 1    50   ~ 0
+Text Label 8150 5875 3    50   ~ 0
 16
-Text Label 8600 5250 1    50   ~ 0
+Text Label 8050 5875 3    50   ~ 0
 17
-Text Label 8500 5250 1    50   ~ 0
+Text Label 7950 5875 3    50   ~ 0
 5
-Text Label 8400 5250 1    50   ~ 0
+Text Label 7850 5875 3    50   ~ 0
 18
-Text Label 8300 5250 1    50   ~ 0
+Text Label 7750 5875 3    50   ~ 0
 19
-Text Label 8200 5250 1    50   ~ 0
+Text Label 7650 5875 3    50   ~ 0
 21
-Text Label 8100 5250 1    50   ~ 0
+Text Label 7550 5875 3    50   ~ 0
 3
-Text Label 8000 5250 1    50   ~ 0
+Text Label 7450 5875 3    50   ~ 0
 1
-Text Label 7900 5250 1    50   ~ 0
+Text Label 7350 5875 3    50   ~ 0
 22
-Text Label 7800 5250 1    50   ~ 0
+Text Label 7250 5875 3    50   ~ 0
 23
 $Comp
 L Switch:SW_Push SW1
@@ -420,4 +418,6 @@ F 3 "" H 10900 6175 50  0001 C CNN
 	1    10900 6175
 	1    0    0    -1  
 $EndComp
+Text Label 9925 3175 1    50   ~ 0
+GND2
 $EndSCHEMATC
