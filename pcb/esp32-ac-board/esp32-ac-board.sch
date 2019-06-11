@@ -80,7 +80,7 @@ L LED:LD271 D1
 U 1 1 5CFE8B8D
 P 5700 3675
 F 0 "D1" H 5650 3965 50  0000 C CNN
-F 1 "LD271" H 5650 3874 50  0000 C CNN
+F 1 "940nm" H 5650 3874 50  0000 C CNN
 F 2 "LED_THT:LED_D5.0mm_IRGrey" H 5700 3850 50  0001 C CNN
 F 3 "http://www.alliedelec.com/m/d/40788c34903a719969df15f1fbea1056.pdf" H 5650 3675 50  0001 C CNN
 	1    5700 3675
@@ -112,7 +112,7 @@ L Device:R R1
 U 1 1 5D00DF0A
 P 6750 2950
 F 0 "R1" H 6550 2950 50  0000 L CNN
-F 1 "R" H 6820 2905 50  0000 L CNN
+F 1 "10k" H 6820 2905 50  0000 L CNN
 F 2 "Resistor_THT:R_Axial_DIN0204_L3.6mm_D1.6mm_P5.08mm_Horizontal" V 6680 2950 50  0001 C CNN
 F 3 "~" H 6750 2950 50  0001 C CNN
 	1    6750 2950
@@ -224,13 +224,13 @@ $EndComp
 $Comp
 L Connector_Generic:Conn_01x15 J2
 U 1 1 5D00F2B8
-P 8500 5450
-F 0 "J2" V 8625 5446 50  0000 C CNN
-F 1 "Conn_01x15" V 8716 5446 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_1x15_P2.54mm_Vertical" H 8500 5450 50  0001 C CNN
-F 3 "~" H 8500 5450 50  0001 C CNN
-	1    8500 5450
-	0    1    1    0   
+P 7950 5675
+F 0 "J2" V 8075 5671 50  0000 C CNN
+F 1 "Conn_01x15" V 8166 5671 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x15_P2.54mm_Vertical" H 7950 5675 50  0001 C CNN
+F 3 "~" H 7950 5675 50  0001 C CNN
+	1    7950 5675
+	0    -1   -1   0   
 $EndComp
 Text Label 8625 4750 3    50   ~ 0
 EN
@@ -312,13 +312,13 @@ F 3 "~" H 9825 5800 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	6225 4275 6225 4575
-Text Label 9200 5250 0    50   ~ 0
+Text Label 8650 5875 3    50   ~ 0
 3V3
-Text Label 9100 5250 1    50   ~ 0
+Text Label 8550 5875 3    50   ~ 0
 GND
-Text Label 9000 5250 1    50   ~ 0
+Text Label 8450 5875 3    50   ~ 0
 15
-Text Label 8900 5250 1    50   ~ 0
+Text Label 8350 5875 3    50   ~ 0
 2
 Text Label 9925 3175 1    50   ~ 0
 GND
@@ -350,27 +350,27 @@ Text Label 8725 3175 1    50   ~ 0
 22
 Text Label 8625 3175 1    50   ~ 0
 23
-Text Label 8800 5250 1    50   ~ 0
+Text Label 8250 5875 3    50   ~ 0
 4
-Text Label 8700 5250 1    50   ~ 0
+Text Label 8150 5875 3    50   ~ 0
 16
-Text Label 8600 5250 1    50   ~ 0
+Text Label 8050 5875 3    50   ~ 0
 17
-Text Label 8500 5250 1    50   ~ 0
+Text Label 7950 5875 3    50   ~ 0
 5
-Text Label 8400 5250 1    50   ~ 0
+Text Label 7850 5875 3    50   ~ 0
 18
-Text Label 8300 5250 1    50   ~ 0
+Text Label 7750 5875 3    50   ~ 0
 19
-Text Label 8200 5250 1    50   ~ 0
+Text Label 7650 5875 3    50   ~ 0
 21
-Text Label 8100 5250 1    50   ~ 0
+Text Label 7550 5875 3    50   ~ 0
 3
-Text Label 8000 5250 1    50   ~ 0
+Text Label 7450 5875 3    50   ~ 0
 1
-Text Label 7900 5250 1    50   ~ 0
+Text Label 7350 5875 3    50   ~ 0
 22
-Text Label 7800 5250 1    50   ~ 0
+Text Label 7250 5875 3    50   ~ 0
 23
 $Comp
 L Switch:SW_Push SW1
@@ -388,10 +388,10 @@ Wire Wire Line
 Wire Wire Line
 	8875 2125 9025 2125
 $Comp
-L power:+5V #PWR?
+L power:+5V #PWR0103
 U 1 1 5CFF5954
 P 5250 3375
-F 0 "#PWR?" H 5250 3225 50  0001 C CNN
+F 0 "#PWR0103" H 5250 3225 50  0001 C CNN
 F 1 "+5V" H 5265 3548 50  0000 C CNN
 F 2 "" H 5250 3375 50  0001 C CNN
 F 3 "" H 5250 3375 50  0001 C CNN
@@ -399,10 +399,10 @@ F 3 "" H 5250 3375 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+5V #PWR?
+L power:+5V #PWR0104
 U 1 1 5CFF6215
 P 10325 4825
-F 0 "#PWR?" H 10325 4675 50  0001 C CNN
+F 0 "#PWR0104" H 10325 4675 50  0001 C CNN
 F 1 "+5V" H 10340 4998 50  0000 C CNN
 F 2 "" H 10325 4825 50  0001 C CNN
 F 3 "" H 10325 4825 50  0001 C CNN
@@ -410,10 +410,10 @@ F 3 "" H 10325 4825 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+5V #PWR?
+L power:+5V #PWR0105
 U 1 1 5CFF718F
 P 10900 6175
-F 0 "#PWR?" H 10900 6025 50  0001 C CNN
+F 0 "#PWR0105" H 10900 6025 50  0001 C CNN
 F 1 "+5V" H 10915 6348 50  0000 C CNN
 F 2 "" H 10900 6175 50  0001 C CNN
 F 3 "" H 10900 6175 50  0001 C CNN
