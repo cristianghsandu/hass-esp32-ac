@@ -1,19 +1,15 @@
 - alias: 'Keep Aurica cool'
   trigger:
-    platform: numeric_state
-    entity_id: sensor.living_temperature
-    above: 27
-    for: 00:00:05
+    platform: time_pattern
+    minutes: '*'
+    seconds: '0'
   action:
-    service: homeassistant.turn_on
     entity_id: switch.ac
-
-- alias: 'Keep Aurica warm'
-  trigger:
-    platform: numeric_state
-    entity_id: sensor.living_temperature
-    below: 25
-    for: 00:00:05
-  action:
-    service: homeassistant.turn_off
-    entity_id: switch.ac
+    service_template: >
+      {% if states.sensor.living_temperature.state | float > 25 and states.switch.ac.state == 'off' %}
+      switch.turn_on
+      {% elif states.sensor.living_temperature.state| float < 25 and states.switch.ac.state == 'on' %}
+      switch.turn_off
+      {% else %}
+      script.do_nothing
+      {% endif %}
