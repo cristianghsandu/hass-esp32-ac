@@ -1,8 +1,9 @@
- - alias: 'Keep Aurica cool'
+- alias: 'Keep Aurica cool'
   trigger:
     platform: numeric_state
     entity_id: sensor.living_temperature
-    above: 28
+    above: 27
+    for: 00:00:05
   action:
     service: homeassistant.turn_on
     entity_id: switch.ac
@@ -12,6 +13,7 @@
     platform: numeric_state
     entity_id: sensor.living_temperature
     below: 25
+    for: 00:00:05
   action:
     service: homeassistant.turn_off
     entity_id: switch.ac
