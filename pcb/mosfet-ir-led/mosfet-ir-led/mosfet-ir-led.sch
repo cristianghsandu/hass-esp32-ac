@@ -1,0 +1,106 @@
+EESchema Schematic File Version 4
+LIBS:mosfet-ir-led-cache
+EELAYER 29 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Transistor_FET:IRF3205 Q1
+U 1 1 5D02B5AE
+P 5200 4000
+F 0 "Q1" H 5406 4046 50  0000 L CNN
+F 1 "IRF3205" H 5406 3955 50  0000 L CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 5450 3925 50  0001 L CIN
+F 3 "http://www.irf.com/product-info/datasheets/data/irf3205.pdf" H 5200 4000 50  0001 L CNN
+	1    5200 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED:LD271 D1
+U 1 1 5D02F392
+P 5300 3375
+F 0 "D1" V 5296 3297 50  0000 R CNN
+F 1 "LD271" V 5205 3297 50  0000 R CNN
+F 2 "LED_THT:LED_D5.0mm_IRGrey" H 5300 3550 50  0001 C CNN
+F 3 "http://www.alliedelec.com/m/d/40788c34903a719969df15f1fbea1056.pdf" H 5250 3375 50  0001 C CNN
+	1    5300 3375
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5300 3050 5300 3275
+Wire Wire Line
+	5300 3575 5300 3800
+$Comp
+L power:GND #PWR03
+U 1 1 5D032C35
+P 5300 4400
+F 0 "#PWR03" H 5300 4150 50  0001 C CNN
+F 1 "GND" H 5305 4227 50  0000 C CNN
+F 2 "" H 5300 4400 50  0001 C CNN
+F 3 "" H 5300 4400 50  0001 C CNN
+	1    5300 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5300 4200 5300 4400
+Wire Wire Line
+	5000 4000 4825 4000
+Text Label 4825 4000 0    50   ~ 0
+SIGNAL
+$Comp
+L power:VCC #PWR02
+U 1 1 5D038BBC
+P 5300 3050
+F 0 "#PWR02" H 5300 2900 50  0001 C CNN
+F 1 "VCC" H 5317 3223 50  0000 C CNN
+F 2 "" H 5300 3050 50  0001 C CNN
+F 3 "" H 5300 3050 50  0001 C CNN
+	1    5300 3050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Battery_Cell V1
+U 1 1 5D03A384
+P 3425 3225
+F 0 "V1" H 3543 3321 50  0000 L CNN
+F 1 "DC 15" H 3543 3230 50  0000 L CNN
+F 2 "" V 3425 3285 50  0001 C CNN
+F 3 "~" V 3425 3285 50  0001 C CNN
+	1    3425 3225
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:VCC #PWR?
+U 1 1 5D03A899
+P 3425 3025
+F 0 "#PWR?" H 3425 2875 50  0001 C CNN
+F 1 "VCC" H 3442 3198 50  0000 C CNN
+F 2 "" H 3425 3025 50  0001 C CNN
+F 3 "" H 3425 3025 50  0001 C CNN
+	1    3425 3025
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D03B74B
+P 3425 3325
+F 0 "#PWR?" H 3425 3075 50  0001 C CNN
+F 1 "GND" H 3430 3152 50  0000 C CNN
+F 2 "" H 3425 3325 50  0001 C CNN
+F 3 "" H 3425 3325 50  0001 C CNN
+	1    3425 3325
+	1    0    0    -1  
+$EndComp
+Text Notes 4475 2450 0    50   ~ 0
+.tran 1u 10m 0 uic
+$EndSCHEMATC
