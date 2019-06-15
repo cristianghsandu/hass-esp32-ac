@@ -1,4 +1,4 @@
-- alias: 'Keep Aurica cool'
+- alias: 'Keep Aurică cool'
   trigger:
     platform: time_pattern
     minutes: '*'
@@ -6,7 +6,7 @@
   action:
     entity_id: switch.ac
     service_template: >
-      {% if states.sensor.living_temperature.state | float > 25 and states.switch.ac.state == 'off' %}
+      {% if states.sensor.living_temperature.state | float > 27 and states.switch.ac.state == 'off' %}
       switch.turn_on
       {% elif states.sensor.living_temperature.state| float < 25 and states.switch.ac.state == 'on' %}
       switch.turn_off
