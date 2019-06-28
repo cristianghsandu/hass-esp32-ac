@@ -1,6 +1,6 @@
 EESchema Schematic File Version 4
 LIBS:esp32-ac-board-cache
-EELAYER 29 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -374,7 +374,7 @@ U 1 1 5D04F293
 P 8675 2125
 F 0 "SW1" H 8675 2410 50  0000 C CNN
 F 1 "SW_Push" H 8675 2319 50  0000 C CNN
-F 2 "Button_Switch_THT:SW_PUSH-12mm" H 8675 2325 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH-12mm_Wuerth-430476085716" H 8675 2325 50  0001 C CNN
 F 3 "~" H 8675 2325 50  0001 C CNN
 	1    8675 2125
 	1    0    0    -1  

@@ -1,6 +1,6 @@
 EESchema Schematic File Version 4
 LIBS:esp32-ac-board-cache
-EELAYER 29 0
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -78,13 +78,13 @@ $EndComp
 $Comp
 L LED:LD271 D1
 U 1 1 5CFE8B8D
-P 5700 3675
-F 0 "D1" H 5650 3965 50  0000 C CNN
-F 1 "940nm" H 5650 3874 50  0000 C CNN
-F 2 "LED_THT:LED_D5.0mm_IRGrey" H 5700 3850 50  0001 C CNN
-F 3 "http://www.alliedelec.com/m/d/40788c34903a719969df15f1fbea1056.pdf" H 5650 3675 50  0001 C CNN
-	1    5700 3675
-	1    0    0    -1  
+P 5600 3675
+F 0 "D1" H 5550 3965 50  0000 C CNN
+F 1 "940nm" H 5550 3874 50  0000 C CNN
+F 2 "LED_THT:LED_D5.0mm_IRGrey" H 5600 3850 50  0001 C CNN
+F 3 "http://www.alliedelec.com/m/d/40788c34903a719969df15f1fbea1056.pdf" H 5550 3675 50  0001 C CNN
+	1    5600 3675
+	-1   0    0    -1  
 $EndComp
 Wire Wire Line
 	9425 4700 9425 4750
@@ -103,8 +103,6 @@ F 3 "" H 6225 4575 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	6225 3875 6225 3675
-Wire Wire Line
-	6225 3675 5800 3675
 Wire Wire Line
 	6875 2775 6875 2675
 $Comp
@@ -376,7 +374,7 @@ U 1 1 5D04F293
 P 8675 2125
 F 0 "SW1" H 8675 2410 50  0000 C CNN
 F 1 "SW_Push" H 8675 2319 50  0000 C CNN
-F 2 "Button_Switch_THT:SW_PUSH-12mm" H 8675 2325 50  0001 C CNN
+F 2 "Button_Switch_THT:SW_PUSH-12mm_Wuerth-430476085716" H 8675 2325 50  0001 C CNN
 F 3 "~" H 8675 2325 50  0001 C CNN
 	1    8675 2125
 	1    0    0    -1  
@@ -453,4 +451,6 @@ F 3 "" H 5575 5525 50  0001 C CNN
 	1    5575 5525
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	5800 3675 6225 3675
 $EndSCHEMATC
