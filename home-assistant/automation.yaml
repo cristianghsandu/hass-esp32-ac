@@ -13,3 +13,12 @@
       {% else %}
       script.do_nothing
       {% endif %}
+
+- alias: 'Remote'
+  trigger:
+    platform: state
+    entity_id: sensor.0x000d6ffffe0b266b_action
+    to: 'toggle'
+  action:
+    entity_id: switch.ac
+    service: switch.toggle
