@@ -14,7 +14,7 @@
       script.do_nothing
       {% endif %}
 
-- alias: 'Remote'
+- alias: 'Remote: AC'
   trigger:
     platform: state
     entity_id: sensor.0x000d6ffffe0b266b_action
@@ -22,3 +22,13 @@
   action:
     entity_id: switch.ac
     service: switch.toggle
+
+- alias: 'Remote: Light'
+  trigger:
+    platform: state
+    entity_id: sensor.0x000d6ffffe0b266b_action
+    to: 'brightness_up_click'
+  action:
+    entity_id: light.living
+    service: light.toggle
+
