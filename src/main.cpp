@@ -20,25 +20,6 @@ OneButton button(BUTTON_PIN, true);
 switch_::MQTTSwitchComponent *mqttAcState;
 BinaryState *acState;
 
-switch_::MQTTSwitchComponent *mqttAcAutoState;
-BinaryState *acAutoState;
-
-void setAutoOnOff()
-{
-    if (!acAutoState || !mqttAcAutoState)
-    {
-        return;
-    }
-
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(100);
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(100);
-    digitalWrite(LED_BUILTIN, LOW);
-}
-
 void turnAcOnOff()
 {
     if (!acState || !mqttAcState)
@@ -48,7 +29,7 @@ void turnAcOnOff()
 
     digitalWrite(LED_BUILTIN, HIGH);
 #if ENABLE_IR
-    irrecv.sendIR((int *)data_ac, codelen);
+    irrecv.sendIR((int *)data_edifier, data_edifier_len);
 #endif
     digitalWrite(LED_BUILTIN, LOW);
 }
@@ -57,12 +38,6 @@ void switchAcState()
 {
     acState->invert_state();
     mqttAcState->publish_state(acState->get_state());
-}
-
-void switchAutoAcOnOff()
-{
-    acAutoState->invert_state();
-    mqttAcAutoState->publish_state(acAutoState->get_state());
 }
 
 void setupHomeAssistant()
@@ -80,22 +55,14 @@ void setupHomeAssistant()
     });
     acState = (BinaryState *)output;
 
-    output::BinaryOutput *autoOutput = new BinaryState([](bool state) {
-        ESP_LOGCONFIG(TAG, "AC auto on/off state: %d", state);
-    });
-    acAutoState = (BinaryState *)autoOutput;
-
     auto acSwitch = App.make_output_switch("AC", output);
-    auto acAutoSwitch = App.make_output_switch("AC Auto", autoOutput);
 
     auto sensor = App.make_dht_sensor("Living Temperature", "Living Humidity", DHT22_PIN, 2000);
     sensor->set_dht_model(sensor::DHT_MODEL_DHT22);
 
     mqttAcState = new switch_::MQTTSwitchComponent(acSwitch);
-    mqttAcAutoState = new switch_::MQTTSwitchComponent(acAutoSwitch);
 
     button.attachClick(switchAcState);
-    button.attachDoubleClick(switchAutoAcOnOff);
 }
 
 void setupPins()
