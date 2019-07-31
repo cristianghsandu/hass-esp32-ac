@@ -29,7 +29,7 @@ void turnAcOnOff()
 
     digitalWrite(LED_BUILTIN, HIGH);
 #if ENABLE_IR
-    irrecv.sendIR((int *)data_edifier, data_edifier_len);
+    irrecv.sendIR((int *)data_ac, data_ac_len);
 #endif
     digitalWrite(LED_BUILTIN, LOW);
 }
