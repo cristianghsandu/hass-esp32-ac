@@ -22,7 +22,7 @@ The KiCad sources for the PCB are in [this folder](pcb/esp32-ac-board).
   
 There very few parts you will need:  
 
-- An ESP32 Doit Devkit v1 (the 30 pin versionm see [this](https://randomnerdtutorials.com/getting-started-with-esp32/))  
+- An ESP32 Doit Devkit v1 (the 30 pin version see [this](https://randomnerdtutorials.com/getting-started-with-esp32/))  
 - A NPN trransistor in TO220 package(you could change the design to use a TO92 transistor) like the [2N5296](https://www.mouser.com/ds/2/68/2n5294-46674.pdf)  
 - Some male and female pin headers(pitch 2.54'')
 - A 12x12mm button  
