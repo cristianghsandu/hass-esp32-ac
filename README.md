@@ -28,6 +28,8 @@ The very few parts you will need are:
 - A 12x12mm push button  
 - An IR LED
 - A DHT22 humidity and temperature sensor  
+- A 4.7k pull up resistor for the DHT22 sensor
+- Optional: a 2 pin screw terminal for powering the board externally
 
 ### The Code ###
 
