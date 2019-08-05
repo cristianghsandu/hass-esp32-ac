@@ -34,3 +34,6 @@ There very few parts you will need:
 The code uses the [Platformio](https://platformio.org/) ecosystem so you will need that to build it(sorry, no Arduino IDE support).  
 Currently it relies on the [esphome-core](https://github.com/esphome/esphome-core) library to connect to Home Assistant but I will need to get rid of it and use just MQTT messages because the author is no longer supporting the C++ API.  
 
+### AC Control ###
+
+To control your AC you will need to change the RAW codes in the [config.h](src/config.g) file. I used [AnalysIR](https://www.analysir.com/) to get my raw codes but you could also get them with an Arduinoor even Lirc with irrecord(it's what I initially did). Hardware wise you will either need an Arduino/Raspberry Pi + TSOP4838 receiver(or any other receiver) or maybe an all-in-one solution like the [USB IR Toy](http://dangerousprototypes.com/docs/USB_Infrared_Toy) - which I already had and used.
