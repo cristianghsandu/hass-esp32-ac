@@ -1,4 +1,4 @@
-- alias: 'Keep Aurică cool'
+- alias: 'Keep Living Cool'
   trigger:
     platform: time_pattern
     minutes: '*'
@@ -18,7 +18,7 @@
   trigger:
     platform: state
     entity_id: sensor.0x000d6ffffe0b266b_action
-    to: 'toggle'
+    to: 'brightness_up_click'
   action:
     entity_id: switch.ac
     service: switch.toggle
@@ -27,7 +27,7 @@
   trigger:
     platform: state
     entity_id: sensor.0x000d6ffffe0b266b_action
-    to: 'brightness_up_click'
+    to: 'toggle'
   action:
     entity_id: light.living
     service: light.toggle
