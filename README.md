@@ -33,7 +33,8 @@ The very few parts you will need are:
 
 ### The Code ###
 
-I am using ESP Home to build the firmware[ESP Home](https://esphome.io/)
+I am using ESP Home to build the firmware [ESP Home](https://esphome.io/).  
+The "code" is in this file: [esphome/ac-living.yml](esphome/ac-living.yml).    
 
 ### AC Control ###
 

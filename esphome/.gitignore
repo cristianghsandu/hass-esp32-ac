@@ -10,3 +10,5 @@
 /secrets.yaml
 /password.yml
 /wifi.yml
+
+/ac_living/partitions.csv
