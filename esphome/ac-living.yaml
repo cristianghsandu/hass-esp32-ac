@@ -1,0 +1,54 @@
+esphome:
+  name: ac_living
+  platform: ESP32
+  board: esp32doit-devkit-v1
+
+wifi: !include wifi.yml
+
+captive_portal:
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !include password.yml
+
+ota:
+  password: !include password.yml
+
+# Hardware push button, active on low
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO12
+      mode: INPUT_PULLUP
+    name: Push Button
+    filters:
+      - delayed_on: 10ms
+
+remote_transmitter:
+  pin: GPIO26
+  carrier_duty_percent: 50%
+
+# AC on/off switch
+switch:
+  - platform: template
+    name: "AC"
+    turn_on_action:
+      remote_transmitter.transmit_raw:
+        code: !include ac-code.yml
+    turn_off_action:
+      remote_transmitter.transmit_raw:
+        code: !include ac-code.yml
+
+# DHT22 Sensor
+sensor:
+  - platform: dht
+    pin: GPIO14
+    model: AM2302
+    temperature:
+      name: "Living Room Temperature"
+    humidity:
+      name: "Living Room Humidity"
+    update_interval: 60s
