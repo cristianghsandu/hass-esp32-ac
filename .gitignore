@@ -8,3 +8,4 @@
 .vscode/ipch/
 .pio/
 src/wifi_config.h
+.esphome
