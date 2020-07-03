@@ -3,14 +3,7 @@ esphome:
   platform: ESP32
   board: esp32doit-devkit-v1
 
-wifi:
-  ssid: "***REMOVED***"
-  password: "***REMOVED***"
-
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
-  ap:
-    ssid: "Ac Control Fallback Hotspot"
-    password: "***REMOVED***"
+wifi: !include wifi.yml
 
 captive_portal:
 

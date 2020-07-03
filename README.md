@@ -33,8 +33,7 @@ The very few parts you will need are:
 
 ### The Code ###
 
-The code uses the [Platformio](https://platformio.org/) ecosystem so you will need that to build it(sorry, no Arduino IDE support).  
-Currently it relies on the [esphome-core](https://github.com/esphome/esphome-core) library to connect to Home Assistant but I will need to get rid of it and use just MQTT messages because the author is no longer supporting the C++ API.  
+I am using ESP Home to build the firmware[ESP Home](https://esphome.io/)
 
 ### AC Control ###
 

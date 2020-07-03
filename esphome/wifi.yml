@@ -1,0 +1,8 @@
+ssid: "SSID"
+password: "PASSWORD"
+
+
+# Enable fallback hotspot (captive portal) in case wifi connection fails
+ap:
+  ssid: "AC Control Fallback Hotspot"
+  password: "PASSWORD2"
