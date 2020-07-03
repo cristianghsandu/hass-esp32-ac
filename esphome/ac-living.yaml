@@ -36,6 +36,7 @@ remote_transmitter:
 switch:
   - platform: template
     name: "AC"
+    optimistic: true
     turn_on_action:
       remote_transmitter.transmit_raw:
         carrier_frequency: 38kHz
