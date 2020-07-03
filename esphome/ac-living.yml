@@ -28,6 +28,7 @@ switch:
     name: "AC"
     id: ac_switch
     optimistic: yes
+    restore_state: no
     turn_on_action:
       remote_transmitter.transmit_raw:
         carrier_frequency: 38kHz
