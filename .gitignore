@@ -1,3 +1,5 @@
 .vscode
 .esphome
 esphome/wifi.yml
+esphome/password.yml
+

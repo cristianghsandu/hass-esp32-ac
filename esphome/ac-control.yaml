@@ -12,7 +12,7 @@ logger:
 
 # Enable Home Assistant API
 api:
-  password: "***REMOVED***"
+  password: !include password.yml
 
 ota:
-  password: "***REMOVED***"
+  password: !include password.yml
