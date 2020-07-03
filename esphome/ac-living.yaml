@@ -9,7 +9,6 @@ captive_portal:
 
 # Enable logging
 logger:
-  level: DEBUG
 
 # Enable Home Assistant API
 api:
@@ -18,16 +17,7 @@ api:
 ota:
   password: !include password.yml
 
-# Hardware push button, active on low
-binary_sensor:
-  - platform: gpio
-    pin:
-      number: GPIO12
-      mode: INPUT_PULLUP
-    name: Push Button
-    filters:
-      - delayed_on: 10ms
-
+# IR Transmitter
 remote_transmitter:
   pin: GPIO26
   carrier_duty_percent: 50%
@@ -36,7 +26,8 @@ remote_transmitter:
 switch:
   - platform: template
     name: "AC"
-    optimistic: true
+    id: ac_switch
+    optimistic: yes
     turn_on_action:
       remote_transmitter.transmit_raw:
         carrier_frequency: 38kHz
@@ -56,3 +47,20 @@ sensor:
     humidity:
       name: "Living Room Humidity"
     update_interval: 60s
+
+# Hardware push button, active on low
+binary_sensor:
+  - platform: gpio
+    pin:
+      number: GPIO12
+      mode: INPUT_PULLUP
+      inverted: yes
+    name: Push Button
+    filters:
+      - delayed_on: 10ms
+    on_click:
+    - min_length: 50ms
+      max_length: 350ms
+      then:
+        switch.toggle: ac_switch
+      
