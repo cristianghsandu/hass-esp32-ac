@@ -48,7 +48,7 @@ sensor:
       name: "Living Room Temperature"
     humidity:
       name: "Living Room Humidity"
-    update_interval: 90s
+    update_interval: 60s
 
 # Hardware push button, active on low
 binary_sensor:
