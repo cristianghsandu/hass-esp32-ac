@@ -21,7 +21,7 @@ ota:
 # IR Transmitter
 remote_transmitter:
   pin: GPIO26
-  carrier_duty_percent: 50%
+  carrier_duty_percent: 30%
 
 # AC on/off switch
 switch:
