@@ -33,11 +33,11 @@ switch:
     turn_on_action:
       remote_transmitter.transmit_raw:
         carrier_frequency: 38kHz
-        code: !include ac-code.yml
+        code: !include ac-code-6th-sense.yml
     turn_off_action:
       remote_transmitter.transmit_raw:
         carrier_frequency: 38kHz
-        code: !include ac-code.yml
+        code: !include ac-code-6th-sense.yml
 
 # DHT22 Sensor
 sensor:
