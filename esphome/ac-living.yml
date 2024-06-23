@@ -16,7 +16,8 @@ api:
   password: !include password.yml
 
 ota:
-  password: !include password.yml
+  - platform: esphome
+    password: !include password.yml
 
 # IR Transmitter
 remote_transmitter:
@@ -29,7 +30,7 @@ switch:
     name: "AC"
     id: ac_switch
     optimistic: yes
-    restore_state: no
+    restore_mode: 'disabled'
     turn_on_action:
       remote_transmitter.transmit_raw:
         carrier_frequency: 38kHz
@@ -65,4 +66,3 @@ binary_sensor:
       max_length: 350ms
       then:
         switch.toggle: ac_switch
-      
