@@ -26,7 +26,7 @@ const char *mqttServer = "***REMOVED***";
 
 // MQTT
 WiFiClient espClient;
-#ifdef ENABLE_MQTT
+#if ENABLE_MQTT
 PubSubClient mqttClient(espClient);
 #endif
 
@@ -48,7 +48,7 @@ int buttonState = -1;
 int acState = 0;
 int autoOnOff = 0;
 
-#ifdef ENABLE_MQTT
+#if ENABLE_MQTT
 void mqttCallback(char *topic, byte *payload, unsigned int length)
 {
     String strTopic(topic);
@@ -100,7 +100,7 @@ void turnAcOnOff()
     digitalWrite(LED_BUILTIN, LOW);
 
     acState = acState ^ 1;
-#ifdef ENABLE_MQTT
+#if ENABLE_MQTT
     mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
 #endif
 }
@@ -116,7 +116,7 @@ void setAutoOnOff()
     digitalWrite(LED_BUILTIN, LOW);
 
     autoOnOff = autoOnOff ^ 1;
-#ifdef ENABLE_MQTT
+#if ENABLE_MQTT
     mqttClient.publish("ac/auto", autoOnOff == 1 ? "on" : "off", true);
 #endif
 }
@@ -144,7 +144,7 @@ void setup()
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
 
-#ifdef ENABLE_MQTT
+#if ENABLE_MQTT
     mqttClient.setServer(mqttServer, 1883);
     mqttClient.setCallback(mqttCallback);
 #endif
@@ -161,7 +161,7 @@ void setup()
 #endif
 }
 
-#ifdef ENABLE_MQTT
+#if ENABLE_MQTT
 void reconnect()
 {
     // Loop until we\"re reconnected
@@ -196,7 +196,7 @@ int lastDhtRead = 0;
 
 void loop()
 {
-#ifdef ENABLE_MQTT
+#if ENABLE_MQTT
     // Connect MQTT
     if (!mqttClient.connected())
     {
