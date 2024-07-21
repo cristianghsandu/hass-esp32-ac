@@ -4,7 +4,8 @@
 
 // Config
 #define ENABLE_IR 1
-#define ENABLE_DHT22 1
+#define ENABLE_DHT22 0
+#define ENABLE_MQTT 0
 
 #include <Arduino.h>
 #include <WiFi.h>
@@ -25,7 +26,9 @@ const char *mqttServer = "***REMOVED***";
 
 // MQTT
 WiFiClient espClient;
+#ifdef ENABLE_MQTT
 PubSubClient mqttClient(espClient);
+#endif
 
 const int SEND_PIN = 26; // pin on the ESP32
 const int BUTTON_PIN = 12;
@@ -45,6 +48,7 @@ int buttonState = -1;
 int acState = 0;
 int autoOnOff = 0;
 
+#ifdef ENABLE_MQTT
 void mqttCallback(char *topic, byte *payload, unsigned int length)
 {
     String strTopic(topic);
@@ -85,6 +89,7 @@ void mqttCallback(char *topic, byte *payload, unsigned int length)
         }
     }
 }
+#endif
 
 void turnAcOnOff()
 {
@@ -95,7 +100,9 @@ void turnAcOnOff()
     digitalWrite(LED_BUILTIN, LOW);
 
     acState = acState ^ 1;
+#ifdef ENABLE_MQTT
     mqttClient.publish("ac/status", acState == 1 ? "on" : "off", true);
+#endif
 }
 
 void setAutoOnOff()
@@ -109,7 +116,9 @@ void setAutoOnOff()
     digitalWrite(LED_BUILTIN, LOW);
 
     autoOnOff = autoOnOff ^ 1;
+#ifdef ENABLE_MQTT
     mqttClient.publish("ac/auto", autoOnOff == 1 ? "on" : "off", true);
+#endif
 }
 
 void setup()
@@ -135,8 +144,10 @@ void setup()
     Serial.println("IP address: ");
     Serial.println(WiFi.localIP());
 
+#ifdef ENABLE_MQTT
     mqttClient.setServer(mqttServer, 1883);
     mqttClient.setCallback(mqttCallback);
+#endif
 
 #if ENABLE_IR
     irrecv.ESP32_IRsendPIN(SEND_PIN, 0);
@@ -150,6 +161,7 @@ void setup()
 #endif
 }
 
+#ifdef ENABLE_MQTT
 void reconnect()
 {
     // Loop until we\"re reconnected
@@ -178,17 +190,20 @@ void reconnect()
         }
     }
 }
+#endif
 
 int lastDhtRead = 0;
 
 void loop()
 {
+#ifdef ENABLE_MQTT
     // Connect MQTT
     if (!mqttClient.connected())
     {
         reconnect();
     }
     mqttClient.loop();
+#endif
 
     button.tick();
 
