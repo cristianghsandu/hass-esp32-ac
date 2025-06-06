@@ -1,7 +1,14 @@
-esphome:
-  name: ac_living
-  platform: ESP32
+substitutions:
+  name: ac-living
   board: esp32doit-devkit-v1
+
+esphome:
+  name: ${name}
+  name_add_mac_suffix: true
+esp32:
+  board: ${board}
+  framework:
+    type: esp-idf
 
 wifi: !include wifi.yml
 
@@ -30,15 +37,15 @@ switch:
     name: "AC"
     id: ac_switch
     optimistic: yes
-    restore_mode: 'disabled'
+    restore_mode: "disabled"
     turn_on_action:
       remote_transmitter.transmit_raw:
         carrier_frequency: 38kHz
-        code: !include ac-code-6th-sense.yml
+        code: !include ac-code.yml
     turn_off_action:
       remote_transmitter.transmit_raw:
         carrier_frequency: 38kHz
-        code: !include ac-code-6th-sense.yml
+        code: !include ac-code.yml
 
 # DHT22 Sensor
 sensor:
@@ -62,7 +69,7 @@ binary_sensor:
     filters:
       - delayed_on: 10ms
     on_click:
-    - min_length: 50ms
-      max_length: 350ms
-      then:
-        switch.toggle: ac_switch
+      - min_length: 50ms
+        max_length: 350ms
+        then:
+          switch.toggle: ac_switch
